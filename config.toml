@@ -1,0 +1,15 @@
+baseURL = 'https://anchetawern.github.io/'
+languageCode = 'en-us'
+title = 'Wern Ancheta'
+theme = "paper"
+
+[params]
+color = 'linen'
+
+twitter = 'wernancheta'
+github = 'anchetaWern'      
+instagram = 'wernancheta'
+rss = true
+
+disableHLJS = true               
+monoDarkIcon = true
