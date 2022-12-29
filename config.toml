@@ -1,4 +1,4 @@
-baseURL = 'https://anchetawern.github.io/'
+baseURL = 'https://anchetaWern.github.io/'
 languageCode = 'en-us'
 title = 'Wern Ancheta'
 theme = "paper"
