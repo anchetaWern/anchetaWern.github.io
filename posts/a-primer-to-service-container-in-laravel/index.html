@@ -1,0 +1,488 @@
+<!doctype html><html class="not-ready text-sm lg:text-base" style=--bg:#faf6f1 lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>A Primer to Service Container in Laravel - Wern Ancheta</title><meta name=theme-color><meta name=description content="In this post we&rsquo;ll take a look at how to make use of the service container in Laravel.
+Let&rsquo;s say we have a class for paying with Stripe:
+<?php namespace App\Services; class StripePaymentService { public function pay() { return 'paid!'; } } With type-hinting, you can easily make use of this class like so:
+<?php use App\Services\StripePaymentService; class PaymentsController extends Controller { public function pay(StripePaymentService $stripe) { return $stripe->pay(); } This way you don&rsquo;t need to initialize it before you can call the method:"><meta name=author content="Wern Ancheta"><link rel="preload stylesheet" as=style href=https://anchetaWern.github.io/main.min.css><link rel=preload as=image href=https://anchetaWern.github.io/theme.png><link rel=preload as=image href=https://anchetaWern.github.io/twitter.svg><link rel=preload as=image href=https://anchetaWern.github.io/github.svg><link rel=preload as=image href=https://anchetaWern.github.io/instagram.svg><link rel=preload as=image href=https://anchetaWern.github.io/rss.svg><link rel=icon href=https://anchetaWern.github.io/favicon.ico><link rel=apple-touch-icon href=https://anchetaWern.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.109.0"><meta property="og:title" content="A Primer to Service Container in Laravel"><meta property="og:description" content="In this post we&rsquo;ll take a look at how to make use of the service container in Laravel.
+Let&rsquo;s say we have a class for paying with Stripe:
+<?php namespace App\Services; class StripePaymentService { public function pay() { return 'paid!'; } } With type-hinting, you can easily make use of this class like so:
+<?php use App\Services\StripePaymentService; class PaymentsController extends Controller { public function pay(StripePaymentService $stripe) { return $stripe->pay(); } This way you don&rsquo;t need to initialize it before you can call the method:"><meta property="og:type" content="article"><meta property="og:url" content="https://anchetaWern.github.io/posts/a-primer-to-service-container-in-laravel/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2021-08-15T00:00:00+00:00"><meta property="article:modified_time" content="2021-08-15T00:00:00+00:00"><meta itemprop=name content="A Primer to Service Container in Laravel"><meta itemprop=description content="In this post we&rsquo;ll take a look at how to make use of the service container in Laravel.
+Let&rsquo;s say we have a class for paying with Stripe:
+<?php namespace App\Services; class StripePaymentService { public function pay() { return 'paid!'; } } With type-hinting, you can easily make use of this class like so:
+<?php use App\Services\StripePaymentService; class PaymentsController extends Controller { public function pay(StripePaymentService $stripe) { return $stripe->pay(); } This way you don&rsquo;t need to initialize it before you can call the method:"><meta itemprop=datePublished content="2021-08-15T00:00:00+00:00"><meta itemprop=dateModified content="2021-08-15T00:00:00+00:00"><meta itemprop=wordCount content="1639"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="A Primer to Service Container in Laravel"><meta name=twitter:description content="In this post we&rsquo;ll take a look at how to make use of the service container in Laravel.
+Let&rsquo;s say we have a class for paying with Stripe:
+<?php namespace App\Services; class StripePaymentService { public function pay() { return 'paid!'; } } With type-hinting, you can easily make use of this class like so:
+<?php use App\Services\StripePaymentService; class PaymentsController extends Controller { public function pay(StripePaymentService $stripe) { return $stripe->pay(); } This way you don&rsquo;t need to initialize it before you can call the method:"></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-0.5 text-3xl font-bold" href=https://anchetaWern.github.io/>Wern Ancheta</a>
+<a class="btn-dark ml-6 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"></a></div><a class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"></a>
+<script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg=`"#faf6f1"`.replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:mt-0 lg:ml-12 lg:items-center lg:space-x-6"><a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/anchetaWern target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./instagram.svg) href=https://instagram.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://anchetaWern.github.io/index.xml target=_blank></a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pt-20 pb-32 dark:prose-invert"><article><header class=mb-20><h1 class="!my-0 pb-2.5">A Primer to Service Container in Laravel</h1><div class="text-sm opacity-60"><time>Aug 15, 2021</time>
+<span class=mx-1>&#183;</span>
+<span>Wern Ancheta</span></div></header><section><p>In this post we&rsquo;ll take a look at how to make use of the service container in Laravel.</p><p>Let&rsquo;s say we have a class for paying with Stripe:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>App\Services</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>StripePaymentService</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>pay</span>() 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;paid!&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>With type-hinting, you can easily make use of this class like so:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\StripePaymentService</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PaymentsController</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Controller</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>pay</span>(<span style=color:#a6e22e>StripePaymentService</span> $stripe)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $stripe<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>pay</span>();
+</span></span><span style=display:flex><span>    }
+</span></span></code></pre></div><p>This way you don&rsquo;t need to initialize it before you can call the method:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span>$stripe <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>StripePaymentService</span>()
+</span></span><span style=display:flex><span>$stripe<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>pay</span>();
+</span></span></code></pre></div><p>Here&rsquo;s the route for those of you who likes to code along:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#a6e22e>Route</span><span style=color:#f92672>::</span><span style=color:#a6e22e>get</span>(<span style=color:#e6db74>&#39;pay&#39;</span>, <span style=color:#e6db74>&#39;PaymentsController@pay&#39;</span>); <span style=color:#75715e>// it&#39;s GET for easy testing, should be POST in the real-world
+</span></span></span></code></pre></div><p>But what if you need to supply arguments to it? This is where the Service Container comes into play. It provides a way for you to manage your class dependencies so you can easily inject them anywhere you need it. All of this without having to initialize the class each time.</p><p>Let&rsquo;s say we now have a constructor for our StripePaymentService class. This allows us to specify the payment method and the currency:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>StripePaymentService</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $payment_method;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $currency;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct($payment_method, $currency)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>payment_method</span> <span style=color:#f92672>=</span> $payment_method;
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>currency</span> <span style=color:#f92672>=</span> $currency;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>pay</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;payment_method&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>payment_method</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;currency&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>currency</span>,
+</span></span><span style=display:flex><span>        ];
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>With this change, we can no longer make use of the code from earlier since there&rsquo;s no way for us to supply the arguments for the constructor:</p><p><img src=/images/posts/a-primer-to-service-container-in-laravel/exception.png alt="Binding resolution exception"></p><p>The easiest way to solve this is via the <code>AppServiceProvider</code> class:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// app/Providers/AppServiceProvider.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>App\Providers</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>Illuminate\Support\ServiceProvider</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>Illuminate\Support\Facades\Blade</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\StripePaymentService</span>; 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>AppServiceProvider</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ServiceProvider</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>   
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>register</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>app</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>bind</span>(<span style=color:#a6e22e>StripePaymentService</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, <span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>StripePaymentService</span>(<span style=color:#e6db74>&#39;card&#39;</span>, <span style=color:#e6db74>&#39;usd&#39;</span>);
+</span></span><span style=display:flex><span>        });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The key code is this one. What this does is return a new instance of the class everytime the <code>StripePaymentService</code> is injected anywhere:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span>$this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>app</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>bind</span>(<span style=color:#a6e22e>StripePaymentService</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, <span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>     <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>StripePaymentService</span>(<span style=color:#e6db74>&#39;card&#39;</span>, <span style=color:#e6db74>&#39;usd&#39;</span>);
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><p>With this code added, this bit of code will now work like usual:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>pay</span>(<span style=color:#a6e22e>StripePaymentService</span> $stripe)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $stripe<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>pay</span>();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>In the real world, this isn&rsquo;t how it usually plays out. We usually have other classes interacting with the StripePaymentService. Let&rsquo;s now add it into our code.</p><p>Create an <code>app/Services/BasketService.php</code> file. This will handle our basket logic. But at the same time, it also needs to use the StripePaymentService to set the amount (basket total) and discount:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>App\Services</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\StripePaymentService</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>BasketService</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $stripe;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// total: 45
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>private</span> $items <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>        [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;title&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;Biscuit&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;price&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>2</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;qty&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>        ],
+</span></span><span style=display:flex><span>        [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;title&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;Oranges&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;price&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>5</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;qty&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>5</span>
+</span></span><span style=display:flex><span>        ],
+</span></span><span style=display:flex><span>    ];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $total;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#a6e22e>StripePaymentService</span> $stripe)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>total</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>stripe</span> <span style=color:#f92672>=</span> $stripe;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>summarize</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>total</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>collect</span>($this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>items</span>)<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>map</span>(<span style=color:#66d9ef>function</span>($row) {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> $row[<span style=color:#e6db74>&#39;price&#39;</span>] <span style=color:#f92672>*</span> $row[<span style=color:#e6db74>&#39;qty&#39;</span>];
+</span></span><span style=display:flex><span>        })<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>sum</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>stripe</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setAmount</span>($this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>total</span>);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setDiscount</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setDiscount</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> ($this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>total</span> <span style=color:#f92672>&gt;=</span> <span style=color:#ae81ff>40</span>) {
+</span></span><span style=display:flex><span>            $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>stripe</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setDiscount</span>(<span style=color:#ae81ff>10</span>);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Open StripePaymentService and update it to handle the amount and the discount:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#75715e>// app/Services/StripePaymentService.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>private</span> $payment_method;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>private</span> $currency;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// add these:
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>private</span> $amount;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>private</span> $discount;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct($payment_method, $currency)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>payment_method</span> <span style=color:#f92672>=</span> $payment_method;
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>currency</span> <span style=color:#f92672>=</span> $currency;
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// add these
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setAmount</span>($amount)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span> <span style=color:#f92672>=</span> $amount;
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setDiscount</span>($discount)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span> <span style=color:#f92672>=</span> $discount;
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>pay</span>()
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> [
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;payment_method&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>payment_method</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;currency&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>currency</span>,
+</span></span><span style=display:flex><span>      
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// add these
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#e6db74>&#39;amount&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;discount&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span>,
+</span></span><span style=display:flex><span>    ];
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Then in the PaymentsController, we&rsquo;re now ready to make use of the BasketService:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#75715e>// app/Http/Controllers/PaymentsController.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\StripePaymentService</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\BasketService</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PaymentsController</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Controller</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// update this
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>pay</span>(<span style=color:#a6e22e>StripePaymentService</span> $stripe, <span style=color:#a6e22e>BasketService</span> $basket)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $basket<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>summarize</span>();
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $stripe<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>pay</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
+</span></span></code></pre></div><p>When you run it on the browser though, you&rsquo;ll see that it doesn&rsquo;t actually perform as expected:</p><p><img src=/images/posts/a-primer-to-service-container-in-laravel/payment-method-output.png alt="payment method output"></p><p>The problem with this is the way we&rsquo;re binding the StripePaymentService class. Instead of <code>$this->app->bind()</code>, we should call <code>$this->app->singleton()</code> instead. This way, it wouldn&rsquo;t create a new instance everytime the class is injected anywhere else in the code. Using a singleton means that it will check to see if a class had already been instantiated before creating a new instance again. If it has already been instantiated then it will simply return the old one.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#75715e>// app/Providers/AppServiceProvider.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>register</span>()
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>app</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>singleton</span>(<span style=color:#a6e22e>StripePaymentService</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, <span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>StripePaymentService</span>(<span style=color:#e6db74>&#39;card&#39;</span>, <span style=color:#e6db74>&#39;usd&#39;</span>);
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>With that change, we now see the expected output:</p><p><img src=/images/posts/a-primer-to-service-container-in-laravel/payment-method-output2.png alt="payment method output"></p><p>Note that we didn&rsquo;t really need to add BasketService into the AppServiceProvider like so:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span>$this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>app</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>singleton</span>(<span style=color:#a6e22e>BasketService</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, <span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>BasketService</span>;
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><p>This is because we don&rsquo;t need it yet. Most likely, you&rsquo;ll be using sessions to store the items data anyway, so you don&rsquo;t really need a singleton for that.</p><p>Now what if we need to introduce a new method of collecting payments? PayPal for example.</p><p>Most likely, the code should be pretty similar like so. Note that <code>payment_method</code> is removed since it&rsquo;s assumed that the PayPal balance will be used:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>App\Services</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PaypalPaymentService</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $currency;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $amount;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $discount;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct($currency)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>currency</span> <span style=color:#f92672>=</span> $currency;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setAmount</span>($amount)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span> <span style=color:#f92672>=</span> $amount;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setDiscount</span>($discount)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span> <span style=color:#f92672>=</span> $discount;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>pay</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;currency&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>currency</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;amount&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;discount&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span>,
+</span></span><span style=display:flex><span>        ];
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Then you&rsquo;ll have to add it again to your AppServiceProvider:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#75715e>// app/Providers/AppServiceProvider.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>$this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>app</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>singleton</span>(<span style=color:#a6e22e>PaypalPaymentService</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, <span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>PaypalPaymentService</span>(<span style=color:#e6db74>&#39;card&#39;</span>, <span style=color:#e6db74>&#39;usd&#39;</span>);
+</span></span><span style=display:flex><span>});
+</span></span></code></pre></div><p>As well as everywhere else you used StripePaymentService earlier.</p><p>And then you&rsquo;ll have to do this over and over as you accept more types of payments. Not really ideal in the long run.</p><p>We can solve this by creating an interface in which all payment types (Stripe, PayPal, etc.) will be based on. This way, we can inject the interface instead of the individual classes wherever we need it.</p><p>Create an <code>app/Services/PaymentServiceInterface.php</code>. This will serve as the &ldquo;blue-print&rdquo; for all our payment types:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>App\Services</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>PaymentServiceInterface</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setAmount</span>($amount);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setDiscount</span>($discount);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>pay</span>();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Then in your individual classes, all you have to do is implement the PaymentServiceInterface. The rest of the code will remain the same:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>App\Services</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\PaymentServiceInterface</span>; <span style=color:#75715e>// add this
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>StripePaymentService</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>PaymentServiceInterface</span> { <span style=color:#75715e>// implement the PaymentServiceInterface
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $payment_method;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $currency;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $amount;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $discount;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct($payment_method, $currency)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>payment_method</span> <span style=color:#f92672>=</span> $payment_method;
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>currency</span> <span style=color:#f92672>=</span> $currency;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setAmount</span>($amount)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span> <span style=color:#f92672>=</span> $amount;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setDiscount</span>($discount)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span> <span style=color:#f92672>=</span> $discount;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>pay</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;service&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;stripe&#39;</span>, <span style=color:#75715e>// add this so we can see which class is being used
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            <span style=color:#e6db74>&#39;payment_method&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>payment_method</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;currency&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>currency</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;amount&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;discount&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span>,
+</span></span><span style=display:flex><span>        ];
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Do the same for the PaypalPaymentService:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>App\Services</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\PaymentServiceInterface</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PaypalPaymentService</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>PaymentServiceInterface</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $currency;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $amount;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $discount;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct($currency)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>currency</span> <span style=color:#f92672>=</span> $currency;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setAmount</span>($amount)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span> <span style=color:#f92672>=</span> $amount;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setDiscount</span>($discount)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span> <span style=color:#f92672>=</span> $discount;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>pay</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;service&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;paypal&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;currency&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>currency</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;amount&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>amount</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;discount&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>discount</span>,
+</span></span><span style=display:flex><span>        ];
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Then update your AppServiceProvider to return a new instance of the correct class based on the request input that&rsquo;s passed in:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#75715e>// app/Providers/AppServiceProvider.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\PaymentServiceInterface</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\StripePaymentService</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\PaypalPaymentService</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>AppServiceProvider</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ServiceProvider</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>register</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>app</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>singleton</span>(<span style=color:#a6e22e>PaymentServiceInterface</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, <span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>request</span>()<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>has</span>(<span style=color:#e6db74>&#39;stripe&#39;</span>)) {
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>StripePaymentService</span>(<span style=color:#e6db74>&#39;card&#39;</span>, <span style=color:#e6db74>&#39;usd&#39;</span>);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>PaypalPaymentService</span>(<span style=color:#e6db74>&#39;usd&#39;</span>);
+</span></span><span style=display:flex><span>        });
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The final step is to update all instances where you used the StripePaymentService and PaypalPaymentService to use the PaymentServiceInterface instead.</p><p>First, we have the BasketService:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// app/Services/BasketService.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>App\Services</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\PaymentServiceInterface</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>BasketService</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $payor;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $items <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>        [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;title&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;Biscuit&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;price&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>2</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;qty&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>        ],
+</span></span><span style=display:flex><span>        [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;title&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;Oranges&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;price&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>5</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;qty&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#ae81ff>5</span>
+</span></span><span style=display:flex><span>        ],
+</span></span><span style=display:flex><span>    ];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $total;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#a6e22e>PaymentServiceInterface</span> $payor)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>total</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>payor</span> <span style=color:#f92672>=</span> $payor;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>summarize</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>total</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>collect</span>($this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>items</span>)<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>map</span>(<span style=color:#66d9ef>function</span>($row) {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> $row[<span style=color:#e6db74>&#39;price&#39;</span>] <span style=color:#f92672>*</span> $row[<span style=color:#e6db74>&#39;qty&#39;</span>];
+</span></span><span style=display:flex><span>        })<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>sum</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>payor</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setAmount</span>($this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>total</span>);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setDiscount</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setDiscount</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> ($this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>total</span> <span style=color:#f92672>&gt;=</span> <span style=color:#ae81ff>40</span>) {
+</span></span><span style=display:flex><span>            $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>payor</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setDiscount</span>(<span style=color:#ae81ff>10</span>);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Next, we have the controller:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\PaymentServiceInterface</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PaymentsController</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Controller</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>pay</span>(<span style=color:#a6e22e>PaymentServiceInterface</span> $payor, <span style=color:#a6e22e>BasketService</span> $basket)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $basket<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>summarize</span>();
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $payor<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>pay</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Now, when you supply <code>stripe</code> in the request, you&rsquo;ll trigger the StripePaymentService:</p><p><img src=/images/posts/a-primer-to-service-container-in-laravel/payment-method-output-stripe.png alt="payment method output stripe"></p><p>Otherwise, you get the PayPal one:</p><p><img src=/images/posts/a-primer-to-service-container-in-laravel/payment-method-output-paypal.png alt="payment method output paypal"></p><p>Now, anytime you need to add a new payment type, all you have to do is create a new class which adheres to the PaymentServiceInterface then add the corresponding check on AppServiceProvider.</p><p>One final thing before I let you go is the use of service provider classes. Sooner or later your AppServiceProvider file will fill with a bunch of codes under the <code>register()</code> method. To avoid that problem, you can create a separate service provider class for each interface.</p><p>Execute the following on your terminal:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>php artisan make:provider PaymentServiceProvider
+</span></span></code></pre></div><p>That will generate a new file <code>app/Providers/PaymentServiceProvider.php</code>. Here, you will just copy and paste the specific binding code you have for the interface that you want this provider to cater to. In this case, we have the PaymentServiceInterface:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>App\Providers</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>Illuminate\Support\ServiceProvider</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\PaymentServiceInterface</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\StripePaymentService</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>App\Services\PaypalPaymentService</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PaymentServiceProvider</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>ServiceProvider</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>   
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>register</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>app</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>singleton</span>(<span style=color:#a6e22e>PaymentServiceInterface</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, <span style=color:#66d9ef>function</span>() {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>request</span>()<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>has</span>(<span style=color:#e6db74>&#39;stripe&#39;</span>)) {
+</span></span><span style=display:flex><span>                <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>StripePaymentService</span>(<span style=color:#e6db74>&#39;card&#39;</span>, <span style=color:#e6db74>&#39;usd&#39;</span>);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>PaypalPaymentService</span>(<span style=color:#e6db74>&#39;usd&#39;</span>);
+</span></span><span style=display:flex><span>        });
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>boot</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#75715e>//
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The final step is add that provider to the <code>providers</code> array in the <code>config/app.php</code> file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#e6db74>&#39;providers&#39;</span> <span style=color:#f92672>=&gt;</span> [
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#a6e22e>App\Providers\PaymentServiceProvider</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>,
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><h2 id=summary>Summary</h2><p>Laravel&rsquo;s Service Container is a useful tool to add in our arsenal to keep our code tidy. By using it in combination with interfaces, you can easily manage your class dependencies. Be sure to read the official documentation for more information regarding the <a href=https://laravel.com/docs/8.x/container>Service Container</a>.</p><p><em>Cover Image from Guillaume Bolduc: <a href=https://unsplash.com/photos/uBe2mknURG4>https://unsplash.com/photos/uBe2mknURG4</a></em></p></section><nav class="mt-24 flex rounded-lg bg-black/[3%] p-1.5 text-lg dark:bg-white/[8%]"><a class="flex w-1/2 items-center rounded-md p-6 pr-3 no-underline hover:bg-black/[2%]" href=https://anchetaWern.github.io/posts/getting-started-with-laravel-facades/><span class=mr-1.5>←</span><span>Getting Started with Laravel Facades</span></a></nav></article></main><footer class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2022
+<a class=link href=https://anchetaWern.github.io/>Wern Ancheta</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>Powered by Hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>▷ Paper 6</a></footer></body></html>
