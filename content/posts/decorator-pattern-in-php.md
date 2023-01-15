@@ -188,5 +188,23 @@ public function test_yoyo_price() : void
 
 This works because the YoyoDecorator class implements the same interface as the original object that we are working with. So no matter how many decorators we wrap the original object with, it will still allow us to get the correct price.
 
+To run this. Be sure you have the following on your `composer.json` file then run `composer dump-autoload`:
+
+```
+"autoload": {
+    "psr-4": {
+        "DecoratorPattern\\App\\": "decoratorpattern/app/"
+    }
+},
+```
+
+Also install phpunit (`composer require phpunit/phpunit`) if you haven't done so already.
+
+Then you can run the tests:
+
+```bash
+vendor/bin/phpunit decoratorpattern/DecoratorTest.php
+```
+
 You can find the source code used in this tutorial on this [GitHub repo](https://github.com/anchetaWern/php-design-patterns).
 
