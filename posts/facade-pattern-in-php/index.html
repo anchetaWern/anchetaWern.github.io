@@ -1,0 +1,123 @@
+<!doctype html><html class="not-ready text-sm lg:text-base" style=--bg:#faf6f1 lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>PHP Design Patterns: Facade Pattern - Wern Ancheta</title><meta name=theme-color><meta name=description content="This is the second post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the facade pattern.
+The Facade pattern is a way of providing a simple and clear interface to a complex system. Because when you have a bunch of classes and they each have their own complex code, it may not be always clear which methods should be called by the client coder."><meta name=author content="Wern Ancheta"><link rel="preload stylesheet" as=style href=https://anchetaWern.github.io/main.min.css><link rel=preload as=image href=https://anchetaWern.github.io/theme.png><link rel=preload as=image href=https://anchetaWern.github.io/twitter.svg><link rel=preload as=image href=https://anchetaWern.github.io/github.svg><link rel=preload as=image href=https://anchetaWern.github.io/instagram.svg><link rel=preload as=image href=https://anchetaWern.github.io/rss.svg><link rel=icon href=https://anchetaWern.github.io/favicon.ico><link rel=apple-touch-icon href=https://anchetaWern.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.109.0"><meta property="og:title" content="PHP Design Patterns: Facade Pattern"><meta property="og:description" content="This is the second post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the facade pattern.
+The Facade pattern is a way of providing a simple and clear interface to a complex system. Because when you have a bunch of classes and they each have their own complex code, it may not be always clear which methods should be called by the client coder."><meta property="og:type" content="article"><meta property="og:url" content="https://anchetaWern.github.io/posts/facade-pattern-in-php/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-01-15T00:00:00+00:00"><meta property="article:modified_time" content="2022-01-15T00:00:00+00:00"><meta itemprop=name content="PHP Design Patterns: Facade Pattern"><meta itemprop=description content="This is the second post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the facade pattern.
+The Facade pattern is a way of providing a simple and clear interface to a complex system. Because when you have a bunch of classes and they each have their own complex code, it may not be always clear which methods should be called by the client coder."><meta itemprop=datePublished content="2022-01-15T00:00:00+00:00"><meta itemprop=dateModified content="2022-01-15T00:00:00+00:00"><meta itemprop=wordCount content="541"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP Design Patterns: Facade Pattern"><meta name=twitter:description content="This is the second post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the facade pattern.
+The Facade pattern is a way of providing a simple and clear interface to a complex system. Because when you have a bunch of classes and they each have their own complex code, it may not be always clear which methods should be called by the client coder."></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-0.5 text-3xl font-bold" href=https://anchetaWern.github.io/>Wern Ancheta</a>
+<a class="btn-dark ml-6 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"></a></div><a class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"></a>
+<script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg=`"#faf6f1"`.replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:mt-0 lg:ml-12 lg:items-center lg:space-x-6"><a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/anchetaWern target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./instagram.svg) href=https://instagram.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://anchetaWern.github.io/index.xml target=_blank></a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pt-20 pb-32 dark:prose-invert"><article><header class=mb-20><h1 class="!my-0 pb-2.5">PHP Design Patterns: Facade Pattern</h1><div class="text-sm opacity-60"><time>Jan 15, 2022</time>
+<span class=mx-1>&#183;</span>
+<span>Wern Ancheta</span></div></header><section><p>This is the second post in a series of articles that will walk you through how to implement design patterns in PHP.</p><p>In this part, we&rsquo;re going to take a look at how you can implement the facade pattern.</p><p>The Facade pattern is a way of providing a simple and clear interface to a complex system. Because when you have a bunch of classes and they each have their own complex code, it may not be always clear which methods should be called by the client coder. The Facade pattern provides a solution to this problem. It does this by providing a gateway to which complex code is accessed via simple methods that achieve clear ends.</p><p>Take the following class for example. Just imagine that this is making calls to various endpoints of the <a href=https://pokeapi.co/>PokeAPI</a> to get various Pokemon data:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// facadepattern/app/PokemonData.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>FacadePattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PokemonData</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>details</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;the details&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>species</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;the species&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>evolutionChain</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;the evolution chain&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>If you&rsquo;ve ever tried using the PokeAPI previously, you know that it returns a whole bunch of data. So the above class might even call on a parser to get to the relevant data. Or it can have other methods it needs to call to construct the data that the user is asking for.</p><p>This is where the Facade pattern comes in. As it will be the one to provide a clear interface which the client coder can call on to easily achieve what they&rsquo;re trying to achieve.</p><p>In this case, you have create a PokemonDataGetter class which allows the user to get a combination of various Pokemon data without concerning themselves with how the underlying class works:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// facadepattern/app/PokemonDataGetter.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>FacadePattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PokemonDataGetter</span>
+</span></span><span style=display:flex><span>{   
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>fetch</span>(<span style=color:#66d9ef>array</span> $methods)<span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $data <span style=color:#f92672>=</span> [];
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>foreach</span> ($methods <span style=color:#66d9ef>as</span> $method) {
+</span></span><span style=display:flex><span>            $data[$method] <span style=color:#f92672>=</span> (<span style=color:#66d9ef>new</span> <span style=color:#a6e22e>PokemonData</span>)<span style=color:#f92672>-&gt;</span>$method();
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $data;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Here&rsquo;s the test code:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// facadepattern/FacadeTest.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>require_once</span> <span style=color:#66d9ef>__DIR__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;/../vendor/autoload.php&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>PHPUnit\Framework\TestCase</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FacadeTest</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TestCase</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_pokemon_facade</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $details_response <span style=color:#f92672>=</span> <span style=color:#a6e22e>FacadePattern\App\PokemonDataGetter</span><span style=color:#f92672>::</span><span style=color:#a6e22e>fetch</span>([<span style=color:#e6db74>&#39;details&#39;</span>]);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($details_response, [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;details&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the details&#39;</span>,
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $species_response <span style=color:#f92672>=</span> <span style=color:#a6e22e>FacadePattern\App\PokemonDataGetter</span><span style=color:#f92672>::</span><span style=color:#a6e22e>fetch</span>([<span style=color:#e6db74>&#39;species&#39;</span>]);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($species_response, [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;species&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the species&#39;</span>,
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $evolution_chain_response <span style=color:#f92672>=</span> <span style=color:#a6e22e>FacadePattern\App\PokemonDataGetter</span><span style=color:#f92672>::</span><span style=color:#a6e22e>fetch</span>([<span style=color:#e6db74>&#39;evolutionChain&#39;</span>]);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($evolution_chain_response, [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;evolutionChain&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the evolution chain&#39;</span>,
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        $details_species_response <span style=color:#f92672>=</span> <span style=color:#a6e22e>FacadePattern\App\PokemonDataGetter</span><span style=color:#f92672>::</span><span style=color:#a6e22e>fetch</span>([<span style=color:#e6db74>&#39;details&#39;</span>, <span style=color:#e6db74>&#39;species&#39;</span>]);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($details_species_response, [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;details&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the details&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;species&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the species&#39;</span>,
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $details_evolution_chain_response <span style=color:#f92672>=</span> <span style=color:#a6e22e>FacadePattern\App\PokemonDataGetter</span><span style=color:#f92672>::</span><span style=color:#a6e22e>fetch</span>([<span style=color:#e6db74>&#39;details&#39;</span>, <span style=color:#e6db74>&#39;evolutionChain&#39;</span>]);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($details_evolution_chain_response, [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;details&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the details&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;evolutionChain&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the evolution chain&#39;</span>,
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $species_evolution_chain_response <span style=color:#f92672>=</span> <span style=color:#a6e22e>FacadePattern\App\PokemonDataGetter</span><span style=color:#f92672>::</span><span style=color:#a6e22e>fetch</span>([<span style=color:#e6db74>&#39;species&#39;</span>, <span style=color:#e6db74>&#39;evolutionChain&#39;</span>]);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($species_evolution_chain_response, [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;species&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the species&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;evolutionChain&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the evolution chain&#39;</span>,
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $all_response <span style=color:#f92672>=</span> <span style=color:#a6e22e>FacadePattern\App\PokemonDataGetter</span><span style=color:#f92672>::</span><span style=color:#a6e22e>fetch</span>([<span style=color:#e6db74>&#39;details&#39;</span>, <span style=color:#e6db74>&#39;species&#39;</span>, <span style=color:#e6db74>&#39;evolutionChain&#39;</span>]);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($all_response, [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;details&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the details&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;species&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the species&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;evolutionChain&#39;</span> <span style=color:#f92672>=&gt;</span> <span style=color:#e6db74>&#39;the evolution chain&#39;</span>,
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>To run this. Be sure to add the following on your <code>composer.json</code> file then run <code>composer dump-autoload</code>:</p><pre tabindex=0><code>&#34;autoload&#34;: {
+    &#34;psr-4&#34;: {
+        &#34;FacadePattern\\App\\&#34;: &#34;facadepattern/app/&#34;
+    }
+},
+</code></pre><p>Also install phpunit (<code>composer require phpunit/phpunit</code>) if you haven&rsquo;t done so already.</p><p>You can then run it by executing the following:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>vendor/bin/phpunit facadepattern/app/FacadeTest.php
+</span></span></code></pre></div><p>That&rsquo;s really all there is to the Facade pattern. It&rsquo;s a way to simplify the usage of an otherwise complex class by creating a facade class which accomplishes specific goals.</p><p>You can find the source code used in this tutorial on this <a href=https://github.com/anchetaWern/php-design-patterns>GitHub repo</a>.</p></section><nav class="mt-24 flex rounded-lg bg-black/[3%] p-1.5 text-lg dark:bg-white/[8%]"><a class="ml-auto flex w-1/2 items-center justify-end rounded-md p-6 pl-3 no-underline hover:bg-black/[2%]" href=https://anchetaWern.github.io/posts/decorator-pattern-in-php/><span>PHP Design Patterns: Decorator Pattern</span><span class=ml-1.5>→</span></a></nav></article></main><footer class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2023
+<a class=link href=https://anchetaWern.github.io/>Wern Ancheta</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>Powered by Hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>▷ Paper 6</a></footer></body></html>
