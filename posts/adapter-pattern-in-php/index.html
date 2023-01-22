@@ -1,0 +1,160 @@
+<!doctype html><html class="not-ready text-sm lg:text-base" style=--bg:#faf6f1 lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>PHP Design Patterns: Adapter Pattern - Wern Ancheta</title><meta name=theme-color><meta name=description content="This is the third post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;ll look at how you can implement the adapter pattern. Just like the name suggests, the Adapter pattern is simply a way to translate a third-party code to a common interface that you can use it within your existing codebase.
+For example, we have a Client class which uses a filesystem library to open a file:"><meta name=author content="Wern Ancheta"><link rel="preload stylesheet" as=style href=https://anchetaWern.github.io/main.min.css><link rel=preload as=image href=https://anchetaWern.github.io/theme.png><link rel=preload as=image href=https://anchetaWern.github.io/twitter.svg><link rel=preload as=image href=https://anchetaWern.github.io/github.svg><link rel=preload as=image href=https://anchetaWern.github.io/instagram.svg><link rel=preload as=image href=https://anchetaWern.github.io/rss.svg><link rel=icon href=https://anchetaWern.github.io/favicon.ico><link rel=apple-touch-icon href=https://anchetaWern.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.110.0"><meta property="og:title" content="PHP Design Patterns: Adapter Pattern"><meta property="og:description" content="This is the third post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;ll look at how you can implement the adapter pattern. Just like the name suggests, the Adapter pattern is simply a way to translate a third-party code to a common interface that you can use it within your existing codebase.
+For example, we have a Client class which uses a filesystem library to open a file:"><meta property="og:type" content="article"><meta property="og:url" content="https://anchetaWern.github.io/posts/adapter-pattern-in-php/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-01-22T00:00:00+00:00"><meta property="article:modified_time" content="2022-01-22T00:00:00+00:00"><meta itemprop=name content="PHP Design Patterns: Adapter Pattern"><meta itemprop=description content="This is the third post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;ll look at how you can implement the adapter pattern. Just like the name suggests, the Adapter pattern is simply a way to translate a third-party code to a common interface that you can use it within your existing codebase.
+For example, we have a Client class which uses a filesystem library to open a file:"><meta itemprop=datePublished content="2022-01-22T00:00:00+00:00"><meta itemprop=dateModified content="2022-01-22T00:00:00+00:00"><meta itemprop=wordCount content="758"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP Design Patterns: Adapter Pattern"><meta name=twitter:description content="This is the third post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;ll look at how you can implement the adapter pattern. Just like the name suggests, the Adapter pattern is simply a way to translate a third-party code to a common interface that you can use it within your existing codebase.
+For example, we have a Client class which uses a filesystem library to open a file:"></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-0.5 text-3xl font-bold" href=https://anchetaWern.github.io/>Wern Ancheta</a>
+<a class="btn-dark ml-6 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"></a></div><a class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"></a>
+<script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg=`"#faf6f1"`.replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:mt-0 lg:ml-12 lg:items-center lg:space-x-6"><a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/anchetaWern target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./instagram.svg) href=https://instagram.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://anchetaWern.github.io/index.xml target=_blank></a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pt-20 pb-32 dark:prose-invert"><article><header class=mb-20><h1 class="!my-0 pb-2.5">PHP Design Patterns: Adapter Pattern</h1><div class="text-sm opacity-60"><time>Jan 22, 2022</time>
+<span class=mx-1>&#183;</span>
+<span>Wern Ancheta</span></div></header><section><p>This is the third post in a series of articles that will walk you through how to implement design patterns in PHP.</p><p>In this part, we&rsquo;ll look at how you can implement the adapter pattern. Just like the name suggests, the Adapter pattern is simply a way to translate a third-party code to a common interface that you can use it within your existing codebase.</p><p>For example, we have a <code>Client</code> class which uses a filesystem library to open a file:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// adapterpattern/app/Client.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>AdapterPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Client</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>readFile</span>(<span style=color:#a6e22e>FilesystemInterface</span> $filesystem)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $filesystem<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>open</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Here&rsquo;s what the <code>FilesystemInterface</code> looks like:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// adapterpattern/app/FilesystemInterface.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>AdapterPattern\App</span>; 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>FilesystemInterface</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>open</span>();
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This is implemented by a class which allows the client to open a file in the local filesystem:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// adapterpattern/app/LocalFilesystem.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>AdapterPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>LocalFilesystem</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>FilesystemInterface</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>open</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;opening local file&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Here&rsquo;s how we go about using it:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// adapterpattern/AdapterTest.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>require_once</span> <span style=color:#66d9ef>__DIR__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;/../vendor/autoload.php&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>PHPUnit\Framework\TestCase</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>AdapterTest</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TestCase</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_filesystem_adapter</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>    {   
+</span></span><span style=display:flex><span>        $client <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>AdapterPattern\App\Client</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $local_filesystem <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>AdapterPattern\App\LocalFilesystem</span>();
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($client<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>readFile</span>($local_filesystem), <span style=color:#e6db74>&#39;opening local file&#39;</span>);
+</span></span><span style=display:flex><span>       
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>Of course this will work as expected since we own the <code>LocalFilesystem</code> class and we can easily make modifications to it as needed. But what if we decided to use a third-party library later on?</p><p>In the below example, we want to use a third-party library which talks to the Dropbox API to open a file in a user&rsquo;s Dropbox:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_filesystem_adapter</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>{   
+</span></span><span style=display:flex><span>    $client <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>AdapterPattern\App\Client</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    $dropbox_filesystem <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>AdapterPattern\App\Dropbox</span>();
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($client<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>readFile</span>($dropbox_filesystem), <span style=color:#e6db74>&#39;opening dropbox file&#39;</span>);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Here&rsquo;s the contents of the <code>Dropbox</code> class:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// adapterpattern/app/Dropbox.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>AdapterPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Dropbox</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>CloudFilesystemInterface</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>openFile</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;opening dropbox file&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>And the interface it adheres to:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// adapterpattern/app/CloudFilesystemInterface.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>AdapterPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>CloudFilesystemInterface</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>openFile</span>();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Obviously, this wouldn&rsquo;t work and you&rsquo;ll get the following error:</p><pre tabindex=0><code>TypeError: AdapterPattern\App\Client::readFile(): Argument #1 ($filesystem) must be of type AdapterPattern\App\FilesystemInterface, AdapterPattern\App\Dropbox given, called in /design-patterns/adapterpattern/AdapterTest.php on line 18
+</code></pre><p>This means that the <code>Client</code> class was expecting something that implements the <code>FilesystemInterface</code> but instead it got the <code>Dropbox</code> class. Moreover, the <code>open</code> method is used by the <code>FilesystemInterface</code> while the <code>Dropbox</code> class has the <code>openFile</code> method. So even if you remove the constraint in the <code>Client</code> class like so:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// adapterpattern/app/Client.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Client</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>readFile</span>($filesystem) <span style=color:#75715e>// removed FilesystemInterface type
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $filesystem<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>open</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>You would still get an error since the method you&rsquo;re trying to call is undefined:</p><pre tabindex=0><code>Error: Call to undefined method AdapterPattern\App\Dropbox::open()
+
+/design-patterns/adapterpattern/app/Client.php:9
+</code></pre><p>This is where the Adapter pattern comes in. You can implement it by creating a class which would use the third-party library you&rsquo;re trying to use. The key thing here is that this class has to implement the interface which you are already using. In this case it&rsquo;s the <code>FilesystemInterface</code>. From there, all you have to do is pass an instance of the third-party library you&rsquo;re trying to use in the constructor then implement all the methods that the interface has specified. In this case, we simply translate the <code>openFile</code> method from the <code>Dropbox</code> library to the <code>open</code> method of the <code>FilesystemInterface</code>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// adapterpattern/app/FilesystemAdapter.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>AdapterPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FilesystemAdapter</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>FilesystemInterface</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>private</span> <span style=color:#a6e22e>CloudFilesystemInterface</span> $filesystem)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>open</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>filesystem</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>openFile</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>At this point, all you need to do is wrap the instance of the <code>Dropbox</code> class with the <code>FilesystemAdapter</code>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_filesystem_adapter</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>{   
+</span></span><span style=display:flex><span>    $client <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>AdapterPattern\App\Client</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    $local_filesystem <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>AdapterPattern\App\LocalFilesystem</span>();
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($client<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>readFile</span>($local_filesystem), <span style=color:#e6db74>&#39;opening local file&#39;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// this wont work since dropbox doesnt adhere to the same interface
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#75715e>/*
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    $dropbox_filesystem = new AdapterPattern\App\Dropbox();
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    $this-&gt;assertEquals($client-&gt;readFile($dropbox_filesystem), &#39;opening dropbox file&#39;);
+</span></span></span><span style=display:flex><span><span style=color:#75715e>    */</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// so we use an adapter which implements the interface we want to adhere to
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    $dropbox_filesystem <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>AdapterPattern\App\Dropbox</span>();
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($client<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>readFile</span>(<span style=color:#66d9ef>new</span> <span style=color:#a6e22e>AdapterPattern\App\FilesystemAdapter</span>($dropbox_filesystem)), <span style=color:#e6db74>&#39;opening dropbox file&#39;</span>);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>That&rsquo;s all there is to the Adapter pattern. It&rsquo;s simply a way to create an adapter for third-party code so that you can plug it in to your existing code.</p><p>Be sure to add the following on your <code>composer.json</code> file then run <code>composer dump-autoload</code>:</p><pre tabindex=0><code>&#34;autoload&#34;: {
+    &#34;psr-4&#34;: {
+        &#34;AdapterPattern\\App\\&#34;: &#34;adapterpattern/app/&#34;
+    }
+},
+</code></pre><p>Also install phpunit (<code>composer require phpunit/phpunit</code>) if you haven&rsquo;t done so already.</p><p>You can then run it by executing the following:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>vendor/bin/phpunit adapterpattern/app/AdapterTest.php
+</span></span></code></pre></div><p>That&rsquo;s really all there is to the Facade pattern. It&rsquo;s a way to simplify the usage of an otherwise complex.</p><p>You can find the source code used in this tutorial on this <a href=https://github.com/anchetaWern/php-design-patterns>GitHub repo</a>.</p></section><nav class="mt-24 flex rounded-lg bg-black/[3%] p-1.5 text-lg dark:bg-white/[8%]"><a class="ml-auto flex w-1/2 items-center justify-end rounded-md p-6 pl-3 no-underline hover:bg-black/[2%]" href=https://anchetaWern.github.io/posts/facade-pattern-in-php/><span>PHP Design Patterns: Facade Pattern</span><span class=ml-1.5>→</span></a></nav></article></main><footer class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2023
+<a class=link href=https://anchetaWern.github.io/>Wern Ancheta</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>Powered by Hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>▷ Paper 6</a></footer></body></html>
