@@ -1,7 +1,7 @@
 ---
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Decorator Pattern"
-date: "2022-01-08"
+date: "2023-01-08"
 ---
 
 This is the first post in a series of articles that will walk you through how to implement design patterns in PHP.
