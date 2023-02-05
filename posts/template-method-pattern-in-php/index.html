@@ -1,0 +1,390 @@
+<!doctype html><html class="not-ready text-sm lg:text-base" style=--bg:#faf6f1 lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>PHP Design Patterns: Template Method Pattern - Wern Ancheta</title><meta name=theme-color><meta name=description content="This is the fifth post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Template Method Pattern.
+You can use this pattern to reduce code duplication in cases where you have a set of related classes which does almost the same thing but not quite. This can be because each class needs to do one or more things just a bit differently."><meta name=author content="Wern Ancheta"><link rel="preload stylesheet" as=style href=https://anchetaWern.github.io/main.min.css><link rel=preload as=image href=https://anchetaWern.github.io/theme.png><link rel=preload as=image href=https://anchetaWern.github.io/twitter.svg><link rel=preload as=image href=https://anchetaWern.github.io/github.svg><link rel=preload as=image href=https://anchetaWern.github.io/instagram.svg><link rel=preload as=image href=https://anchetaWern.github.io/rss.svg><link rel=icon href=https://anchetaWern.github.io/favicon.ico><link rel=apple-touch-icon href=https://anchetaWern.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.110.0"><meta property="og:title" content="PHP Design Patterns: Template Method Pattern"><meta property="og:description" content="This is the fifth post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Template Method Pattern.
+You can use this pattern to reduce code duplication in cases where you have a set of related classes which does almost the same thing but not quite. This can be because each class needs to do one or more things just a bit differently."><meta property="og:type" content="article"><meta property="og:url" content="https://anchetaWern.github.io/posts/template-method-pattern-in-php/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-02-05T00:00:00+00:00"><meta property="article:modified_time" content="2023-02-05T00:00:00+00:00"><meta itemprop=name content="PHP Design Patterns: Template Method Pattern"><meta itemprop=description content="This is the fifth post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Template Method Pattern.
+You can use this pattern to reduce code duplication in cases where you have a set of related classes which does almost the same thing but not quite. This can be because each class needs to do one or more things just a bit differently."><meta itemprop=datePublished content="2023-02-05T00:00:00+00:00"><meta itemprop=dateModified content="2023-02-05T00:00:00+00:00"><meta itemprop=wordCount content="1056"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP Design Patterns: Template Method Pattern"><meta name=twitter:description content="This is the fifth post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Template Method Pattern.
+You can use this pattern to reduce code duplication in cases where you have a set of related classes which does almost the same thing but not quite. This can be because each class needs to do one or more things just a bit differently."></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-0.5 text-3xl font-bold" href=https://anchetaWern.github.io/>Wern Ancheta</a>
+<a class="btn-dark ml-6 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"></a></div><a class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"></a>
+<script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg=`"#faf6f1"`.replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:mt-0 lg:ml-12 lg:items-center lg:space-x-6"><a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/anchetaWern target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./instagram.svg) href=https://instagram.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://anchetaWern.github.io/index.xml target=_blank></a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pt-20 pb-32 dark:prose-invert"><article><header class=mb-20><h1 class="!my-0 pb-2.5">PHP Design Patterns: Template Method Pattern</h1><div class="text-sm opacity-60"><time>Feb 5, 2023</time>
+<span class=mx-1>&#183;</span>
+<span>Wern Ancheta</span></div></header><section><p>This is the fifth post in a series of articles that will walk you through how to implement design patterns in PHP.</p><p>In this part, we&rsquo;re going to take a look at how you can implement the Template Method Pattern.</p><p>You can use this pattern to reduce code duplication in cases where you have a set of related classes which does almost the same thing but not quite. This can be because each class needs to do one or more things just a bit differently.</p><p>To run this. Be sure to add the following on your <code>composer.json</code> file then run <code>composer dump-autoload</code>:</p><pre tabindex=0><code>&#34;autoload&#34;: {
+    &#34;psr-4&#34;: {
+        &#34;TemplateMethodPattern\\App\\&#34;: &#34;templatemethodpattern/app/&#34;
+    }
+},
+</code></pre><p>Also install phpunit (<code>composer require phpunit/phpunit</code>) if you haven&rsquo;t done so already.</p><p>Say we have three classes, each one pertaining to a way to create a smoothie. So we have a <code>HerbalSmoothie</code> for creating a smoothie whose base flavor uses herbs. A <code>VeggieSmoothie</code> which uses vegetables as base. And a <code>FruitySmoothie</code> whose base flavor uses fruits.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// templatemethodpattern/app/HerBalSmoothie.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>TemplateMethodPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>HerbalSmoothie</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>array</span> $ingredients <span style=color:#f92672>=</span> [];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>blend</span>()<span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addWater</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addHerbs</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addMilk</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addSeeds</span>();
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addWater</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;water&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addHerbs</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;herbs&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addMilk</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;milk&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addSeeds</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;seeds&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// templatemethodpattern/app/VeggieSmoothie.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>TemplateMethodPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>VeggieSmoothie</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>array</span> $ingredients <span style=color:#f92672>=</span> [];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>blend</span>()<span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addWater</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addVeggies</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addMilk</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addSeeds</span>();
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addWater</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;water&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addVeggies</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;veggies&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addMilk</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;milk&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addSeeds</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;seeds&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// templatemethodpattern/app/FruitySmoothie.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>TemplateMethodPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FruitySmoothie</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>array</span> $ingredients <span style=color:#f92672>=</span> [];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>blend</span>()<span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addWater</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addFruit</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addMilk</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addSeeds</span>();
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addWater</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;water&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addFruit</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;main fruit&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addMilk</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;milk&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addSeeds</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;seeds&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>The main method for each of class is called <code>blend</code>. This returns an array of ingredients that was used in that smoothie.</p><p>If you try out the code now, it will work:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// templatemethodpattern/TemplateMethodTest.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>require_once</span> <span style=color:#66d9ef>__DIR__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;/../vendor/autoload.php&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>PHPUnit\Framework\TestCase</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TemplateMethodTest</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TestCase</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_smoothie</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>    {   
+</span></span><span style=display:flex><span>        $herbalSmoothie <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TemplateMethodPattern\App\HerbalSmoothie</span>();
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($herbalSmoothie<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>blend</span>(), [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;water&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;herbs&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;milk&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;seeds&#39;</span>,
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $fruitySmoothie <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TemplateMethodPattern\App\FruitySmoothie</span>();
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($fruitySmoothie<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>blend</span>(), [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;water&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;fruit&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;milk&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;seeds&#39;</span>,
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $veggieSmoothie <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TemplateMethodPattern\App\VeggieSmoothie</span>();
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($veggieSmoothie<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>blend</span>(), [
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;water&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;veggies&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;milk&#39;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;seeds&#39;</span>,
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>To run this. Be sure to add the following on your <code>composer.json</code> file then run <code>composer dump-autoload</code>:</p><pre tabindex=0><code>&#34;autoload&#34;: {
+    &#34;psr-4&#34;: {
+        &#34;TemplateMethodPattern\\App\\&#34;: &#34;templatemethodpattern/app/&#34;
+    }
+},
+</code></pre><p>Also install phpunit (<code>composer require phpunit/phpunit</code>) if you haven&rsquo;t done so already.</p><p>You can then run it by executing the following:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>vendor/bin/phpunit templatemethodpattern/app/TemplateMethodTest.php
+</span></span></code></pre></div><p>As you might have noticed, each of the classes are pretty much doing the same thing since there are ingredients that are common to each one (water, milk, and seeds).</p><p>This is where the Template Method Pattern can help us.</p><p>The first step would be to create an abstract class which contains all the variables and methods common to all of the related classes:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// templatemethodpattern/app/Smoothie.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>TemplateMethodPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Smoothie</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>protected</span> <span style=color:#66d9ef>array</span> $ingredients <span style=color:#f92672>=</span> [];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>protected</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addWater</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;water&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>protected</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addMilk</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;milk&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>protected</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addSeeds</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;seeds&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Then in each of the classes, you can now extend the parent class and then call the methods you need:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// templatemethodpattern/app/HerbalSmoothie.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>TemplateMethodPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>HerbalSmoothie</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Smoothie</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>blend</span>()<span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addWater</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addHerbs</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addMilk</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addSeeds</span>();
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addHerbs</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;herbs&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// templatemethodpattern/app/VeggieSmoothie.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>TemplateMethodPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>VeggieSmoothie</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Smoothie</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>blend</span>()<span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addWater</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addVeggies</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addMilk</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addSeeds</span>();
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addVeggies</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;veggies&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// templatemethodpattern/app/FruitySmoothie.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>TemplateMethodPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FruitySmoothie</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Smoothie</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>blend</span>()<span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addWater</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addFruit</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addMilk</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addSeeds</span>();
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addFruit</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;fruit&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>If you run the tests now, it will work but we&rsquo;re not quite there yet. If you noticed, we&rsquo;re still duplicating the <code>blend()</code> method across each class. They each have a different implementation, but they&rsquo;re still pretty much doing the same thing. So how could we get rid of this duplication?</p><p>In your parent class, you can delegate the implementation of the &ldquo;odd&rdquo; method to each of its subclasses:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Smoothie</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// ..
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>protected</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addMainFlavor</span>(); <span style=color:#75715e>// add this
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>Once you&rsquo;ve done that, you can now move the <code>blend</code> method over to your main class and simply call the odd method from there:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Smoothie</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// ..
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>blend</span>()<span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addWater</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addMainFlavor</span>() <span style=color:#75715e>// add this
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addMilk</span>()
+</span></span><span style=display:flex><span>            <span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addSeeds</span>();
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>At this point, you can now update each of your subclasses to implement that method:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// templatemethodpattern/app/HerbalSmoothie.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>TemplateMethodPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>HerbalSmoothie</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Smoothie</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addMainFlavor</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;herbs&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// templatemethodpattern/app/VeggieSmoothie.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>TemplateMethodPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>VeggieSmoothie</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Smoothie</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addMainFlavor</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;veggies&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// templatemethodpattern/app/FruitySmoothie.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>TemplateMethodPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FruitySmoothie</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Smoothie</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addMainFlavor</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ingredients</span>[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;fruit&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>At this point when you run the tests it will run smoothie-ly (pun intended).</p><p>That&rsquo;s really all there is to the Template Method Pattern. It&rsquo;s simply a way to DRY up your code by means of using an abstract class to implement the methods that are common to all of the related classes, and then leaving the methods that are unique to each class for them to implement.</p><p>Now the name &ldquo;template method pattern&rdquo; should make a bit sense because you&rsquo;re essentially creating the template of a method in the parent class so that its sub classes can implement it.</p><p>You can find the source code used in this tutorial on this <a href=https://github.com/anchetaWern/php-design-patterns>GitHub repo</a>.</p></section><nav class="mt-24 flex rounded-lg bg-black/[3%] p-1.5 text-lg dark:bg-white/[8%]"><a class="ml-auto flex w-1/2 items-center justify-end rounded-md p-6 pl-3 no-underline hover:bg-black/[2%]" href=https://anchetaWern.github.io/posts/strategy-pattern-in-php/><span>PHP Design Patterns: Strategy Pattern</span><span class=ml-1.5>→</span></a></nav></article></main><footer class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2023
+<a class=link href=https://anchetaWern.github.io/>Wern Ancheta</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>Powered by Hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>▷ Paper 6</a></footer></body></html>
