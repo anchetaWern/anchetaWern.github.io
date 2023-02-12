@@ -1,0 +1,230 @@
+<!doctype html><html class="not-ready text-sm lg:text-base" style=--bg:#faf6f1 lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>PHP Design Patterns: Chain of Responsibility Pattern - Wern Ancheta</title><meta name=theme-color><meta name=description content="This is the sixth post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this post, we&rsquo;ll take a look at how you can implement the Chain of Responsibility pattern.
+This pattern allows you to chain related code together in such a way that the control is passed to the next link in the chain if the condition you&rsquo;re checking for in the current chain passes."><meta name=author content="Wern Ancheta"><link rel="preload stylesheet" as=style href=https://anchetaWern.github.io/main.min.css><link rel=preload as=image href=https://anchetaWern.github.io/theme.png><link rel=preload as=image href=https://anchetaWern.github.io/twitter.svg><link rel=preload as=image href=https://anchetaWern.github.io/github.svg><link rel=preload as=image href=https://anchetaWern.github.io/instagram.svg><link rel=preload as=image href=https://anchetaWern.github.io/rss.svg><link rel=icon href=https://anchetaWern.github.io/favicon.ico><link rel=apple-touch-icon href=https://anchetaWern.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.110.0"><meta property="og:title" content="PHP Design Patterns: Chain of Responsibility Pattern"><meta property="og:description" content="This is the sixth post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this post, we&rsquo;ll take a look at how you can implement the Chain of Responsibility pattern.
+This pattern allows you to chain related code together in such a way that the control is passed to the next link in the chain if the condition you&rsquo;re checking for in the current chain passes."><meta property="og:type" content="article"><meta property="og:url" content="https://anchetaWern.github.io/posts/chain-of-responsibility-pattern-in-php/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-02-12T00:00:00+00:00"><meta property="article:modified_time" content="2023-02-12T00:00:00+00:00"><meta itemprop=name content="PHP Design Patterns: Chain of Responsibility Pattern"><meta itemprop=description content="This is the sixth post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this post, we&rsquo;ll take a look at how you can implement the Chain of Responsibility pattern.
+This pattern allows you to chain related code together in such a way that the control is passed to the next link in the chain if the condition you&rsquo;re checking for in the current chain passes."><meta itemprop=datePublished content="2023-02-12T00:00:00+00:00"><meta itemprop=dateModified content="2023-02-12T00:00:00+00:00"><meta itemprop=wordCount content="1002"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP Design Patterns: Chain of Responsibility Pattern"><meta name=twitter:description content="This is the sixth post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this post, we&rsquo;ll take a look at how you can implement the Chain of Responsibility pattern.
+This pattern allows you to chain related code together in such a way that the control is passed to the next link in the chain if the condition you&rsquo;re checking for in the current chain passes."></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-0.5 text-3xl font-bold" href=https://anchetaWern.github.io/>Wern Ancheta</a>
+<a class="btn-dark ml-6 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"></a></div><a class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"></a>
+<script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg=`"#faf6f1"`.replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:mt-0 lg:ml-12 lg:items-center lg:space-x-6"><a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/anchetaWern target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./instagram.svg) href=https://instagram.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://anchetaWern.github.io/index.xml target=_blank></a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pt-20 pb-32 dark:prose-invert"><article><header class=mb-20><h1 class="!my-0 pb-2.5">PHP Design Patterns: Chain of Responsibility Pattern</h1><div class="text-sm opacity-60"><time>Feb 12, 2023</time>
+<span class=mx-1>&#183;</span>
+<span>Wern Ancheta</span></div></header><section><p>This is the sixth post in a series of articles that will walk you through how to implement design patterns in PHP.</p><p>In this post, we&rsquo;ll take a look at how you can implement the Chain of Responsibility pattern.</p><p>This pattern allows you to chain related code together in such a way that the control is passed to the next link in the chain if the condition you&rsquo;re checking for in the current chain passes. This pattern is commonly used in implementing middleware or validation code. So if the condition or validation rule passes for one middleware, it just passes the control to the next until such time that all the middleware are passing.</p><p>Say we have the following <code>Developer</code> class which accepts boolean values of the things they already tried when solving a specific problem:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// chainofresponsibilitypattern/app/Developer.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Developer</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>bool</span> $hasReadDocumentation, <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>bool</span> $hasSearchedGoogle, <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>bool</span> $hasAskedStackoverflow)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Next, we create a separate class for each of the ways a problem can be solved: <code>ReadDocumentation</code>, <code>SearchGoogle</code>, <code>AskStackOverflow</code>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// chainofresponsibilitypattern/app/ReadDocumentation.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Exceptions\DeveloperDidNotReadDocumentationException</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ReadDocumentation</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>SolveIssue</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>solve</span>(<span style=color:#a6e22e>Developer</span> $developer) 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>$developer<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>hasReadDocumentation</span>) <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>DeveloperDidNotReadDocumentationException</span>;
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>next</span>($developer);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// chainofresponsibilitypattern/app/SearchGoogle.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Exceptions\DeveloperDidNotSearchGoogleException</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>SearchGoogle</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>SolveIssue</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>solve</span>(<span style=color:#a6e22e>Developer</span> $developer) 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>$developer<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>hasSearchedGoogle</span>) <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>DeveloperDidNotSearchGoogleException</span>;
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>next</span>($developer);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// chainofresponsibilitypattern/app/AskStackOverflow.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Exceptions\DeveloperDidNotAskStackOverflowException</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>AskStackOverflow</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>SolveIssue</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>solve</span>(<span style=color:#a6e22e>Developer</span> $developer) 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>$developer<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>hasAskedStackoverflow</span>) <span style=color:#66d9ef>throw</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>DeveloperDidNotAskStackOverflowException</span>;
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>next</span>($developer);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Since the Chain of Responsibility is usually used for middlewares and input validation, we need to create our own exception classes for each of the classes we created above. This way, we have a specific exception to throw to the user in case the condition fails:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// chainofresponsibilitypattern/app/Exceptions/DeveloperDidNotSearchGoogleException.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Exceptions</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>Exception</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>DeveloperDidNotReadDocumentationException</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Exception</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct() {
+</span></span><span style=display:flex><span>       
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>parent</span><span style=color:#f92672>::</span><span style=color:#a6e22e>__construct</span>(<span style=color:#e6db74>&#34;You haven&#39;t read the documentation yet.&#34;</span>, <span style=color:#a6e22e>code</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>0</span>, <span style=color:#a6e22e>previous</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>null</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __toString() {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>__CLASS__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#34;: [</span><span style=color:#e6db74>{</span>$this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>code</span><span style=color:#e6db74>}</span><span style=color:#e6db74>]: </span><span style=color:#e6db74>{</span>$this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>message</span><span style=color:#e6db74>}</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// chainofresponsibilitypattern/app/Exceptions/DeveloperDidNotSearchGoogleException.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Exceptions</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>Exception</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>DeveloperDidNotSearchGoogleException</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Exception</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct() {
+</span></span><span style=display:flex><span>       
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>parent</span><span style=color:#f92672>::</span><span style=color:#a6e22e>__construct</span>(<span style=color:#e6db74>&#34;You haven&#39;t searched google yet.&#34;</span>, <span style=color:#a6e22e>code</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>0</span>, <span style=color:#a6e22e>previous</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>null</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __toString() {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>__CLASS__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#34;: [</span><span style=color:#e6db74>{</span>$this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>code</span><span style=color:#e6db74>}</span><span style=color:#e6db74>]: </span><span style=color:#e6db74>{</span>$this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>message</span><span style=color:#e6db74>}</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// chainofresponsibilitypattern/app/Exceptions/DeveloperDidNotAskStackOverflowException.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Exceptions</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>Exception</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>DeveloperDidNotAskStackOverflowException</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Exception</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct() {
+</span></span><span style=display:flex><span>       
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>parent</span><span style=color:#f92672>::</span><span style=color:#a6e22e>__construct</span>(<span style=color:#e6db74>&#34;You haven&#39;t asked stackoverflow yet.&#34;</span>, <span style=color:#a6e22e>code</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>0</span>, <span style=color:#a6e22e>previous</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>null</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __toString() {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>__CLASS__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#34;: [</span><span style=color:#e6db74>{</span>$this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>code</span><span style=color:#e6db74>}</span><span style=color:#e6db74>]: </span><span style=color:#e6db74>{</span>$this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>message</span><span style=color:#e6db74>}</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>Next, we now implement the main bulk of this pattern. As you&rsquo;ve seen earlier, we were extending the <code>SolveIssue</code> class. This is where we declare the common functionality for each of the classes as well as the method which they need to implement. At its core, the Chain of Responsibility pattern needs a way to:</p><ol><li>Chain multiple classes together.</li><li>Call on the next link in the chain.</li></ol><p>That&rsquo;s really all there is to it. To implement the first one, we have the <code>then</code> method. What this does is assign the next link in the chain. This needs to accept the same type (<code>SolveIssue</code>) otherwise it wouldn&rsquo;t work. We simply assign this next class to a local class variable for easy access later on.</p><p>Next, we have the <code>next</code> method. This is accepts the input that we want to check. In this case it&rsquo;s the <code>Developer</code>. If there&rsquo;s no longer a next link in the chain then we simply return control to the caller. If there is then we call on the <code>solve</code> method of that class. We know for sure that this method exists because we already performed a type-check when the <code>then</code> method was called.</p><p>Lastly, we leave it to the child class to implement the <code>solve</code> method.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// chainofresponsibilitypattern/app/SolveIssue.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>SolveIssue</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>protected</span> $nextSolver;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>then</span>(<span style=color:#a6e22e>SolveIssue</span> $solver)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>nextSolver</span> <span style=color:#f92672>=</span> $solver;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>protected</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>next</span>(<span style=color:#a6e22e>Developer</span> $developer) 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span>$this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>nextSolver</span>) <span style=color:#66d9ef>return</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>nextSolver</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>solve</span>($developer);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>solve</span>(<span style=color:#a6e22e>Developer</span> $developer);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>At this point, we can now add the client code. Here, the main goal is to assert that the correct exceptions are being triggered based on the parameters we passed when creating a new <code>Developer</code> object. This also depends on the order in which the links on the chain is arranged. For example, if the developer did not read the documentation and we have the <code>ReadDocumentation</code> as the first link in the chain then surely the <code>DeveloperDidNotReadDocumentationException</code> will be triggered first and the chain is terminated immediately after the first class does its check. On the other hand, if it goes by the following order: <code>SearchGoogle</code> -> <code>AskStackOverflow</code> -> <code>ReadDocumentation</code> and we have the following options passed: <code>hasReadDocumentation: false, hasSearchedGoogle: true, hasAskedStackoverflow: true</code> then it will have to go through all the classes:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// chainofresponsibilitypattern/ChainOfResponsibilityTest.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>require_once</span> <span style=color:#66d9ef>__DIR__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;/../vendor/autoload.php&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>PHPUnit\Framework\TestCase</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ChainOfResponsibilityTest</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TestCase</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_chain_one</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>expectException</span>(<span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Exceptions\DeveloperDidNotReadDocumentationException</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $developer <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Developer</span>(<span style=color:#a6e22e>hasReadDocumentation</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>false</span>, <span style=color:#a6e22e>hasSearchedGoogle</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>false</span>, <span style=color:#a6e22e>hasAskedStackoverflow</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>false</span>);
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        $readDocumentation <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\ReadDocumentation</span>;
+</span></span><span style=display:flex><span>        $searchGoogle <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\SearchGoogle</span>;
+</span></span><span style=display:flex><span>        $askStackOverflow <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\AskStackOverflow</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $readDocumentation<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>then</span>($searchGoogle);
+</span></span><span style=display:flex><span>        $searchGoogle<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>then</span>($askStackOverflow);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $readDocumentation<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>solve</span>($developer);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_chain_two</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>expectException</span>(<span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Exceptions\DeveloperDidNotSearchGoogleException</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $developer <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Developer</span>(<span style=color:#a6e22e>hasReadDocumentation</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>true</span>, <span style=color:#a6e22e>hasSearchedGoogle</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>false</span>, <span style=color:#a6e22e>hasAskedStackoverflow</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>true</span>);
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        $readDocumentation <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\ReadDocumentation</span>;
+</span></span><span style=display:flex><span>        $searchGoogle <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\SearchGoogle</span>;
+</span></span><span style=display:flex><span>        $askStackOverflow <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\AskStackOverflow</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $askStackOverflow<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>then</span>($searchGoogle);
+</span></span><span style=display:flex><span>        $searchGoogle<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>then</span>($readDocumentation);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $askStackOverflow<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>solve</span>($developer);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_chain_three</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>expectException</span>(<span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Exceptions\DeveloperDidNotAskStackOverflowException</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $developer <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\Developer</span>(<span style=color:#a6e22e>hasReadDocumentation</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>true</span>, <span style=color:#a6e22e>hasSearchedGoogle</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>true</span>, <span style=color:#a6e22e>hasAskedStackoverflow</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>false</span>);
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        $readDocumentation <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\ReadDocumentation</span>;
+</span></span><span style=display:flex><span>        $searchGoogle <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\SearchGoogle</span>;
+</span></span><span style=display:flex><span>        $askStackOverflow <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>ChainOfResponsibilityPattern\App\AskStackOverflow</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $searchGoogle<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>then</span>($readDocumentation);
+</span></span><span style=display:flex><span>        $searchGoogle<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>then</span>($askStackOverflow);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $searchGoogle<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>solve</span>($developer);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>To run this. Be sure you have the following on your <code>composer.json</code> file then run <code>composer dump-autoload</code>:</p><pre tabindex=0><code>&#34;autoload&#34;: {
+    &#34;psr-4&#34;: {
+        &#34;ChainOfResponsibilityPattern\\App\\&#34;: &#34;chainofresponsibilitypattern/app&#34;
+    }
+},
+</code></pre><p>Also install phpunit (<code>composer require phpunit/phpunit</code>) if you haven&rsquo;t done so already.</p><p>Then you can run the tests:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>vendor/bin/phpunit chainofresponsibilitypattern/ChainOfResponsibilityTest.php
+</span></span></code></pre></div><p>That&rsquo;s the Chain of Responsibility pattern. There&rsquo;s not really much to say about it since it&rsquo;s just a way to chain a bunch of related checks together. It&rsquo;s flexible enough to accomodate any order in which the checks are linked together.</p><p>You can find the source code used in this tutorial on this <a href=https://github.com/anchetaWern/php-design-patterns>GitHub repo</a>.</p></section><nav class="mt-24 flex rounded-lg bg-black/[3%] p-1.5 text-lg dark:bg-white/[8%]"><a class="ml-auto flex w-1/2 items-center justify-end rounded-md p-6 pl-3 no-underline hover:bg-black/[2%]" href=https://anchetaWern.github.io/posts/template-method-pattern-in-php/><span>PHP Design Patterns: Template Method Pattern</span><span class=ml-1.5>→</span></a></nav></article></main><footer class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2023
+<a class=link href=https://anchetaWern.github.io/>Wern Ancheta</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>Powered by Hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>▷ Paper 6</a></footer></body></html>
