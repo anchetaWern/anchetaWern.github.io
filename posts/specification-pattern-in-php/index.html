@@ -1,0 +1,126 @@
+<!doctype html><html class="not-ready text-sm lg:text-base" style=--bg:#faf6f1 lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>PHP Design Patterns: Specification Pattern - Wern Ancheta</title><meta name=theme-color><meta name=description content="This is the seventh post in a series of articles on how to implement design patterns in PHP.
+This part, we&rsquo;ll go through the Specification Pattern. It is used when you want to upgrade some business rule into a first-class citizen. So you create a separate class for each business rule. At its core, all it does is check for a specific condition and returns either true or false.
+The most common example are the business rules surrounding a user."><meta name=author content="Wern Ancheta"><link rel="preload stylesheet" as=style href=https://anchetaWern.github.io/main.min.css><link rel=preload as=image href=https://anchetaWern.github.io/theme.png><link rel=preload as=image href=https://anchetaWern.github.io/twitter.svg><link rel=preload as=image href=https://anchetaWern.github.io/github.svg><link rel=preload as=image href=https://anchetaWern.github.io/instagram.svg><link rel=preload as=image href=https://anchetaWern.github.io/rss.svg><link rel=icon href=https://anchetaWern.github.io/favicon.ico><link rel=apple-touch-icon href=https://anchetaWern.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.110.0"><meta property="og:title" content="PHP Design Patterns: Specification Pattern"><meta property="og:description" content="This is the seventh post in a series of articles on how to implement design patterns in PHP.
+This part, we&rsquo;ll go through the Specification Pattern. It is used when you want to upgrade some business rule into a first-class citizen. So you create a separate class for each business rule. At its core, all it does is check for a specific condition and returns either true or false.
+The most common example are the business rules surrounding a user."><meta property="og:type" content="article"><meta property="og:url" content="https://anchetaWern.github.io/posts/specification-pattern-in-php/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-02-19T00:00:00+00:00"><meta property="article:modified_time" content="2023-02-19T00:00:00+00:00"><meta itemprop=name content="PHP Design Patterns: Specification Pattern"><meta itemprop=description content="This is the seventh post in a series of articles on how to implement design patterns in PHP.
+This part, we&rsquo;ll go through the Specification Pattern. It is used when you want to upgrade some business rule into a first-class citizen. So you create a separate class for each business rule. At its core, all it does is check for a specific condition and returns either true or false.
+The most common example are the business rules surrounding a user."><meta itemprop=datePublished content="2023-02-19T00:00:00+00:00"><meta itemprop=dateModified content="2023-02-19T00:00:00+00:00"><meta itemprop=wordCount content="532"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP Design Patterns: Specification Pattern"><meta name=twitter:description content="This is the seventh post in a series of articles on how to implement design patterns in PHP.
+This part, we&rsquo;ll go through the Specification Pattern. It is used when you want to upgrade some business rule into a first-class citizen. So you create a separate class for each business rule. At its core, all it does is check for a specific condition and returns either true or false.
+The most common example are the business rules surrounding a user."></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-0.5 text-3xl font-bold" href=https://anchetaWern.github.io/>Wern Ancheta</a>
+<a class="btn-dark ml-6 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"></a></div><a class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"></a>
+<script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg=`"#faf6f1"`.replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:mt-0 lg:ml-12 lg:items-center lg:space-x-6"><a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/anchetaWern target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./instagram.svg) href=https://instagram.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://anchetaWern.github.io/index.xml target=_blank></a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pt-20 pb-32 dark:prose-invert"><article><header class=mb-20><h1 class="!my-0 pb-2.5">PHP Design Patterns: Specification Pattern</h1><div class="text-sm opacity-60"><time>Feb 19, 2023</time>
+<span class=mx-1>&#183;</span>
+<span>Wern Ancheta</span></div></header><section><p>This is the seventh post in a series of articles on how to implement design patterns in PHP.</p><p>This part, we&rsquo;ll go through the Specification Pattern. It is used when you want to upgrade some business rule into a first-class citizen. So you create a separate class for each business rule. At its core, all it does is check for a specific condition and returns either true or false.</p><p>The most common example are the business rules surrounding a user. If you’re running a subscription-based service, you would have a business rule which gives a user specific privileges based on their occupation. And so you create a class that would represent that rule via the Specification pattern.</p><p>Here&rsquo;s a <code>User</code> class which accepts a name and the occupation when initialized:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// specificationpattern\app\User.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>SpecificationPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>User</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>string</span> $name, <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>string</span> $occupation)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Next, we need to create an interface in which all the specifications will abide to. This accepts a <code>User</code> object as argument:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>SpecificationPattern\App\UserSpecifications</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>SpecificationPattern\App\User</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>UserOccupationSpecification</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>matches</span>(<span style=color:#a6e22e>User</span> $user);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Then have it implemented by each of the user occupations supported in your system:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>SpecificationPattern\App\UserSpecifications</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>SpecificationPattern\App\User</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>IsPokemonTrainer</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>UserOccupationSpecification</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>matches</span>(<span style=color:#a6e22e>User</span> $user)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $user<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>occupation</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;pokemon_trainer&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>SpecificationPattern\App\UserSpecifications</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>SpecificationPattern\App\User</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>IsPirate</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>UserOccupationSpecification</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>matches</span>(<span style=color:#a6e22e>User</span> $user)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $user<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>occupation</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;pirate&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>SpecificationPattern\App\UserSpecifications</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>SpecificationPattern\App\User</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>IsMadScientist</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>UserOccupationSpecification</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>matches</span>(<span style=color:#a6e22e>User</span> $user)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $user<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>occupation</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;mad_scientist&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Note that the given example is only for checking a specific user attribute. If for example, you added a new business rule which gives specific privileges to a user based on their age then you will have to create another specification for that (eg. <code>UserAgeSpecification</code> then it will be implemented by <code>IsElderly</code>, <code>IsChild</code>, etc.)</p><p>At this point, all that&rsquo;s left is to add the client code. You just need to call the <code>matches</code> method in the specification and then pass in the <code>User</code> object you want to check:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// specification/pattern/SpecificationTest.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>require_once</span> <span style=color:#66d9ef>__DIR__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;/../vendor/autoload.php&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>PHPUnit\Framework\TestCase</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>SpecificationTest</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TestCase</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_specs</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>       $pirateUser <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>SpecificationPattern\App\User</span>(<span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;luffy&#39;</span>, <span style=color:#a6e22e>occupation</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;pirate&#39;</span>);
+</span></span><span style=display:flex><span>       $pokemonTrainerUser <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>SpecificationPattern\App\User</span>(<span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;ash&#39;</span>, <span style=color:#a6e22e>occupation</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;pokemon_trainer&#39;</span>);
+</span></span><span style=display:flex><span>       $madScientistUser <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>SpecificationPattern\App\User</span>(<span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;rintaro&#39;</span>, <span style=color:#a6e22e>occupation</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;mad_scientist&#39;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>       $pirateSpecification <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>SpecificationPattern\App\UserSpecifications\IsPirate</span>;
+</span></span><span style=display:flex><span>       $pokemonTrainerSpecification <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>SpecificationPattern\App\UserSpecifications\IsPokemonTrainer</span>;
+</span></span><span style=display:flex><span>       $madScientistSpecification <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>SpecificationPattern\App\UserSpecifications\IsMadScientist</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>       $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertTrue</span>($pirateSpecification<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>matches</span>($pirateUser));
+</span></span><span style=display:flex><span>       $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertTrue</span>($pokemonTrainerSpecification<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>matches</span>($pokemonTrainerUser));
+</span></span><span style=display:flex><span>       $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertTrue</span>($madScientistSpecification<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>matches</span>($madScientistUser));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>       $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertFalse</span>($pirateSpecification<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>matches</span>($pokemonTrainerUser));
+</span></span><span style=display:flex><span>       $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertFalse</span>($pirateSpecification<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>matches</span>($madScientistUser));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>       $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertFalse</span>($pokemonTrainerSpecification<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>matches</span>($pirateUser));
+</span></span><span style=display:flex><span>       $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertFalse</span>($pokemonTrainerSpecification<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>matches</span>($madScientistUser));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>       $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertFalse</span>($madScientistSpecification<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>matches</span>($pirateUser));
+</span></span><span style=display:flex><span>       $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertFalse</span>($madScientistSpecification<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>matches</span>($pokemonTrainerUser));
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>To run this. Be sure you have the following on your <code>composer.json</code> file then run <code>composer dump-autoload</code>:</p><pre tabindex=0><code>&#34;autoload&#34;: {
+    &#34;psr-4&#34;: {
+        &#34;SpecificationPattern\\App\\&#34;: &#34;specificationpattern/app&#34;
+    }
+},
+</code></pre><p>Also install phpunit (<code>composer require phpunit/phpunit</code>) if you haven&rsquo;t done so already.</p><p>Then you can run the tests:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>vendor/bin/phpunit specificationpattern/SpecificationTest.php
+</span></span></code></pre></div><p>That&rsquo;s all there is to the specification pattern. It&rsquo;s actually overkill for the examples we used above. You would only want to reach for this pattern if you have some complicated logic required to implement a specific business rule. 90% of the time, you would only have these conditions under your database model classes (especially the one&rsquo;s we used above).</p><p>You can find the source code used in this tutorial on this <a href=https://github.com/anchetaWern/php-design-patterns>GitHub repo</a>.</p></section><nav class="mt-24 flex rounded-lg bg-black/[3%] p-1.5 text-lg dark:bg-white/[8%]"><a class="ml-auto flex w-1/2 items-center justify-end rounded-md p-6 pl-3 no-underline hover:bg-black/[2%]" href=https://anchetaWern.github.io/posts/chain-of-responsibility-pattern-in-php/><span>PHP Design Patterns: Chain of Responsibility Pattern</span><span class=ml-1.5>→</span></a></nav></article></main><footer class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2023
+<a class=link href=https://anchetaWern.github.io/>Wern Ancheta</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>Powered by Hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>▷ Paper 6</a></footer></body></html>
