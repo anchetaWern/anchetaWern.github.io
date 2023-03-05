@@ -97,7 +97,7 @@ class PottingMix
 With the normal setup, you would have to initialize an object for all three classes and then passing them as an argument to the `PottingMix` class:
 
 
-```php 
+```php
 <?php 
 // factorypattern/app/FactoryTest.php
 
@@ -179,7 +179,7 @@ To run this. Be sure you have the following on your `composer.json` file then ru
     "psr-4": {
         "FactoryPattern\\App\\": "factorypattern/app"
     }
-},
+}
 ```
 
 Also install phpunit (`composer require phpunit/phpunit`) if you haven't done so already.
