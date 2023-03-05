@@ -1,0 +1,140 @@
+<!doctype html><html class="not-ready text-sm lg:text-base" style=--bg:#faf6f1 lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>PHP Design Patterns: Factory Pattern - Wern Ancheta</title><meta name=theme-color><meta name=description content="This is the ninth post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how we can implement the Factory Pattern.
+This pattern is used for returning an instance of another classe. Why would anyone want to create a separate class which just returns another class you say? That’s because oftentimes you’re not just dealing with a single class. More often that not, two or more class instances (or just their properties) is required to create an instance of another class."><meta name=author content="Wern Ancheta"><link rel="preload stylesheet" as=style href=https://anchetaWern.github.io/main.min.css><link rel=preload as=image href=https://anchetaWern.github.io/theme.png><link rel=preload as=image href=https://anchetaWern.github.io/twitter.svg><link rel=preload as=image href=https://anchetaWern.github.io/github.svg><link rel=preload as=image href=https://anchetaWern.github.io/instagram.svg><link rel=preload as=image href=https://anchetaWern.github.io/rss.svg><link rel=icon href=https://anchetaWern.github.io/favicon.ico><link rel=apple-touch-icon href=https://anchetaWern.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.110.0"><meta property="og:title" content="PHP Design Patterns: Factory Pattern"><meta property="og:description" content="This is the ninth post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how we can implement the Factory Pattern.
+This pattern is used for returning an instance of another classe. Why would anyone want to create a separate class which just returns another class you say? That’s because oftentimes you’re not just dealing with a single class. More often that not, two or more class instances (or just their properties) is required to create an instance of another class."><meta property="og:type" content="article"><meta property="og:url" content="https://anchetaWern.github.io/posts/factory-pattern-in-php/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-03-05T00:00:00+00:00"><meta property="article:modified_time" content="2023-03-05T00:00:00+00:00"><meta itemprop=name content="PHP Design Patterns: Factory Pattern"><meta itemprop=description content="This is the ninth post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how we can implement the Factory Pattern.
+This pattern is used for returning an instance of another classe. Why would anyone want to create a separate class which just returns another class you say? That’s because oftentimes you’re not just dealing with a single class. More often that not, two or more class instances (or just their properties) is required to create an instance of another class."><meta itemprop=datePublished content="2023-03-05T00:00:00+00:00"><meta itemprop=dateModified content="2023-03-05T00:00:00+00:00"><meta itemprop=wordCount content="652"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP Design Patterns: Factory Pattern"><meta name=twitter:description content="This is the ninth post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how we can implement the Factory Pattern.
+This pattern is used for returning an instance of another classe. Why would anyone want to create a separate class which just returns another class you say? That’s because oftentimes you’re not just dealing with a single class. More often that not, two or more class instances (or just their properties) is required to create an instance of another class."></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-0.5 text-3xl font-bold" href=https://anchetaWern.github.io/>Wern Ancheta</a>
+<a class="btn-dark ml-6 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"></a></div><a class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"></a>
+<script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg=`"#faf6f1"`.replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:mt-0 lg:ml-12 lg:items-center lg:space-x-6"><a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/anchetaWern target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./instagram.svg) href=https://instagram.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://anchetaWern.github.io/index.xml target=_blank></a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pt-20 pb-32 dark:prose-invert"><article><header class=mb-20><h1 class="!my-0 pb-2.5">PHP Design Patterns: Factory Pattern</h1><div class="text-sm opacity-60"><time>Mar 5, 2023</time>
+<span class=mx-1>&#183;</span>
+<span>Wern Ancheta</span></div></header><section><p>This is the ninth post in a series of articles on how to implement design patterns in PHP.</p><p>In this part, we&rsquo;ll see how we can implement the Factory Pattern.</p><p>This pattern is used for returning an instance of another classe. Why would anyone want to create a separate class which just returns another class you say? That’s because oftentimes you’re not just dealing with a single class. More often that not, two or more class instances (or just their properties) is required to create an instance of another class. That’s when the Factory Pattern comes in handy. You don&rsquo;t want to be creating an object out of those dependencies everytime you need to create an object for a specific class.</p><p>This pattern is commonly used for creating dummy data for seeding your database. But you can basically use it anywhere which requires you to put together multiple objects to create another object.</p><p>Let&rsquo;s say we have a class for creating potting mixes for planting. Potting mixes are composed of garden soil, carbonized rice hull, and vermicast. Initializing an object for each one requires a <code>ratio</code> to be passed to it so let&rsquo;s create an abstract class which allows us to inherit this behavior:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// factorypattern/app/GrowingMedium.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>FactoryPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>GrowingMedium</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>int</span> $ratio) {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>Next, create a separate class for each of the growing mediums:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// factorypattern/app/GardenSoil.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>FactoryPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>GardenSoil</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>GrowingMedium</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// factorypattern/app/CarbonizedRiceHull.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>FactoryPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CarbonizedRiceHull</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>GrowingMedium</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// factorypattern/app/Vermicast.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>FactoryPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Vermicast</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>GrowingMedium</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span> 
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Lastly, create the <code>PottingMix</code> class. This requires three growing mediums to be passed to it when initializing. We also have a <code>getTotal</code> function which returns the sum of the ratios for all of the growing mediums that was passed in the constructor:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// factorypattern/app/PottingMix.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>FactoryPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>FactoryPattern\App\GrowingMedium</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PottingMix</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>public</span> <span style=color:#a6e22e>GrowingMedium</span> $medium_one, <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>GrowingMedium</span> $medium_two, <span style=color:#66d9ef>public</span> <span style=color:#a6e22e>GrowingMedium</span> $medium_three)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getTotal</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>int</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>array_sum</span>([$this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>medium_one</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ratio</span>, $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>medium_two</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ratio</span>, $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>medium_three</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>ratio</span>]);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>With the normal setup, you would have to initialize an object for all three classes and then passing them as an argument to the <code>PottingMix</code> class:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// factorypattern/app/FactoryTest.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>require_once</span> <span style=color:#66d9ef>__DIR__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;/../vendor/autoload.php&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>PHPUnit\Framework\TestCase</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FactoryTest</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TestCase</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_nonfactory</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $garden_soil <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>FactoryPattern\App\GardenSoil</span>(<span style=color:#ae81ff>40</span>);
+</span></span><span style=display:flex><span>        $crh <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>FactoryPattern\App\CarbonizedRiceHull</span>(<span style=color:#ae81ff>30</span>);
+</span></span><span style=display:flex><span>        $vermicast <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>FactoryPattern\App\Vermicast</span>(<span style=color:#ae81ff>30</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $potting_mix <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>FactoryPattern\App\PottingMix</span>($garden_soil, $crh, $vermicast);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($potting_mix<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getTotal</span>(), <span style=color:#ae81ff>100</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The code above is fine, as long as you only use this type of call once. But as soon as you find yourself repeating the same thing, that&rsquo;s when you reach for the Factory Pattern. The basic idea is for you to create a class which does the initialization for you and passing all the dependencies it needs:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// factorypattern/app/PottingMixFactory.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>FactoryPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PottingMixFactory</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>static</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>create</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $garden_soil <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>GardenSoil</span>(<span style=color:#ae81ff>40</span>);
+</span></span><span style=display:flex><span>        $crh <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>CarbonizedRiceHull</span>(<span style=color:#ae81ff>30</span>);
+</span></span><span style=display:flex><span>        $vermicast <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Vermicast</span>(<span style=color:#ae81ff>30</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>PottingMix</span>($garden_soil, $crh, $vermicast);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Now, you will only have to reach for the PottingMixFactory to create a new potting mix:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// factorypattern/FactoryTest.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>require_once</span> <span style=color:#66d9ef>__DIR__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;/../vendor/autoload.php&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>PHPUnit\Framework\TestCase</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FactoryTest</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TestCase</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_factory</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $potting_mix <span style=color:#f92672>=</span> <span style=color:#a6e22e>FactoryPattern\App\PottingMixFactory</span><span style=color:#f92672>::</span><span style=color:#a6e22e>create</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($potting_mix<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getTotal</span>(), <span style=color:#ae81ff>100</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>If the dependencies change for the main class you&rsquo;re trying to initialize, or the arguments passed to any of its dependencies changes then you can simply make that change in the corresponding factory.</p><p>To run this. Be sure you have the following on your <code>composer.json</code> file then run <code>composer dump-autoload</code>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#e6db74>&#34;autoload&#34;</span><span style=color:#960050;background-color:#1e0010>:</span> {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;psr-4&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;FactoryPattern\\App\\&#34;</span>: <span style=color:#e6db74>&#34;factorypattern/app&#34;</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Also install phpunit (<code>composer require phpunit/phpunit</code>) if you haven&rsquo;t done so already.</p><p>Then you can run the tests:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>vendor/bin/phpunit factorypattern/FactoryTest.php
+</span></span></code></pre></div><p>That&rsquo;s it for the Factory Pattern. It is simply a utility class for initializing objects.</p><p>You can find the source code used in this tutorial on this <a href=https://github.com/anchetaWern/php-design-patterns>GitHub repo</a>.</p></section><nav class="mt-24 flex rounded-lg bg-black/[3%] p-1.5 text-lg dark:bg-white/[8%]"><a class="ml-auto flex w-1/2 items-center justify-end rounded-md p-6 pl-3 no-underline hover:bg-black/[2%]" href=https://anchetaWern.github.io/posts/observer-pattern-in-php/><span>PHP Design Patterns: Observer Pattern</span><span class=ml-1.5>→</span></a></nav></article></main><footer class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2023
+<a class=link href=https://anchetaWern.github.io/>Wern Ancheta</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>Powered by Hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>▷ Paper 6</a></footer></body></html>
