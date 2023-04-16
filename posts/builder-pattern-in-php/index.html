@@ -1,0 +1,317 @@
+<!doctype html><html class="not-ready text-sm lg:text-base" style=--bg:#faf6f1 lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>PHP Design Patterns: Builder Pattern - Wern Ancheta</title><meta name=theme-color><meta name=description content="This is the 15th post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Builder Pattern.
+The Builder Pattern is a creational design pattern which allows for the creation of related objects without having to repeat yourself.
+For example, when creating a sandwich you&rsquo;ll have many different types and many different combinations of its components that you can put."><meta name=author content="Wern Ancheta"><link rel="preload stylesheet" as=style href=https://anchetaWern.github.io/main.min.css><link rel=preload as=image href=https://anchetaWern.github.io/theme.png><link rel=preload as=image href=https://anchetaWern.github.io/twitter.svg><link rel=preload as=image href=https://anchetaWern.github.io/github.svg><link rel=preload as=image href=https://anchetaWern.github.io/instagram.svg><link rel=preload as=image href=https://anchetaWern.github.io/rss.svg><link rel=icon href=https://anchetaWern.github.io/favicon.ico><link rel=apple-touch-icon href=https://anchetaWern.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.110.0"><meta property="og:title" content="PHP Design Patterns: Builder Pattern"><meta property="og:description" content="This is the 15th post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Builder Pattern.
+The Builder Pattern is a creational design pattern which allows for the creation of related objects without having to repeat yourself.
+For example, when creating a sandwich you&rsquo;ll have many different types and many different combinations of its components that you can put."><meta property="og:type" content="article"><meta property="og:url" content="https://anchetaWern.github.io/posts/builder-pattern-in-php/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-04-16T00:00:00+00:00"><meta property="article:modified_time" content="2023-04-16T00:00:00+00:00"><meta itemprop=name content="PHP Design Patterns: Builder Pattern"><meta itemprop=description content="This is the 15th post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Builder Pattern.
+The Builder Pattern is a creational design pattern which allows for the creation of related objects without having to repeat yourself.
+For example, when creating a sandwich you&rsquo;ll have many different types and many different combinations of its components that you can put."><meta itemprop=datePublished content="2023-04-16T00:00:00+00:00"><meta itemprop=dateModified content="2023-04-16T00:00:00+00:00"><meta itemprop=wordCount content="1492"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP Design Patterns: Builder Pattern"><meta name=twitter:description content="This is the 15th post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Builder Pattern.
+The Builder Pattern is a creational design pattern which allows for the creation of related objects without having to repeat yourself.
+For example, when creating a sandwich you&rsquo;ll have many different types and many different combinations of its components that you can put."></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-0.5 text-3xl font-bold" href=https://anchetaWern.github.io/>Wern Ancheta</a>
+<a class="btn-dark ml-6 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"></a></div><a class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"></a>
+<script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg=`"#faf6f1"`.replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:mt-0 lg:ml-12 lg:items-center lg:space-x-6"><a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/anchetaWern target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./instagram.svg) href=https://instagram.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://anchetaWern.github.io/index.xml target=_blank></a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pt-20 pb-32 dark:prose-invert"><article><header class=mb-20><h1 class="!my-0 pb-2.5">PHP Design Patterns: Builder Pattern</h1><div class="text-sm opacity-60"><time>Apr 16, 2023</time>
+<span class=mx-1>&#183;</span>
+<span>Wern Ancheta</span></div></header><section><p>This is the 15th post in a series of articles that will walk you through how to implement design patterns in PHP.</p><p>In this part, we&rsquo;re going to take a look at how you can implement the Builder Pattern.</p><p>The Builder Pattern is a creational design pattern which allows for the creation of related objects without having to repeat yourself.</p><p>For example, when creating a sandwich you&rsquo;ll have many different types and many different combinations of its components that you can put. But in the end they&rsquo;re all just a sandwich so they&rsquo;re made up of the same type of stuff:</p><ul><li><strong>Bread</strong> - the type of bread you use as the base of the sandwich.</li><li><strong>Spread</strong> - what you use to coat the innerside of the bread which will serve as the base flavor.</li><li><strong>Filling</strong> - this is what usually decides what type of sandwich you&rsquo;re making. If the filling is tuna then its a tuna sandwich. If it&rsquo;s chicken then chicken sandwich.</li><li><strong>Garnish</strong> - what you put on top of the sandwich.</li></ul><p>With that in mind, you can probably create a <code>Sandwich</code> class like so:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Sandwich</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct($bread, $spread, $filling, $garnish)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// ...
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Then you can initialize a new object like so:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>$sandwich <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Sandwich</span>(<span style=color:#e6db74>&#39;wheat&#39;</span>, <span style=color:#e6db74>&#39;mayo&#39;</span>, <span style=color:#e6db74>&#39;tuna&#39;</span>, <span style=color:#e6db74>&#39;onion&#39;</span>);
+</span></span></code></pre></div><p>And that will serve you fine. But what if the garnish and the filling is optional? You can probably have it like so:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct($bread, $spread, $filling <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>, $garnish <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The disadvantage with this is that you&rsquo;ll have to remember which parameters are required and which ones are not. With this example, it isn&rsquo;t actually too painful since we only have four unique options. But what if you have 30 different options? You can probably create a subclass for that:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TunaSandwich</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Sandwich</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct($bread, $spread, $filling, $garnish <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PeanutButterSandwich</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Sandwich</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct($bread, $spread, $filling <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>, $garnish <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>EggSandwich</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Sandwich</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct($bread, $spread, $filling, $garnish <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>As you can see, we inadvertently introduced some amount of repetition, especially with those sandwiches that accept the same options. And if we scale this up further (eg. 30 different sandwiches with multiple spreads, fillings, and garnishes) then you&rsquo;ll have something that looks like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>BanhMi</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Sandwich</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct($bread, $spread, $filling1, $filling2 <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>, $filling3 <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>, $garnish1, $garnish2 <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>, $garnish3 <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>, $garnish4 <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The Builder Pattern provides us with a solution to this problem. It involves:</p><ol><li>Breaking down the object construction into a series of steps - for sandwich construction, this will be adding the bread, spread, filling, and garnish.</li><li>Representing the different types of sandwiches as their own class - for example: tuna sandwich, falafel, banh mi.</li><li>Representing the different components as their own class - for example, when creating a Banh Mi (Vietnamese Sandwich) we can have a French baguette, white onion, mayonaise, and cilantro as their own component.</li><li>Creating a separate sandwich builder for each type of sandwich - for example: Tuna sandwich builder, egg sandwich builder.</li><li>The director - responsible for calling all the steps created in step 1 and returning the actual sandwich.</li></ol><p>Now let&rsquo;s proceed to the implementation.</p><p>First, we need to create the base representation of a sandwich. This is where all the other types of sandwich will extend from. It has a <code>setComponent</code> method for setting the different components mentioned in step 3. This accepts a <code>$key</code> which serves as the unique array key where we store the component and the actual component as the second argument.</p><p>On the other hand, the <code>getComponent</code> method will be mainly used for testing so we can verify if the sandwich got the correct components:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// builderpattern/app/Sandwich/Sandwich.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Component</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>abstract</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Sandwich</span> {
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>array</span> $components <span style=color:#f92672>=</span> [];
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setComponent</span>($key, <span style=color:#a6e22e>Component</span> $component) 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>components</span>[$key] <span style=color:#f92672>=</span> $component;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getComponent</span>($key)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>components</span>[$key];
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>We use a <code>Component</code> interface for grouping:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// builderpattern/app/Sandwich/Components/Component.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Component</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>At this point, you can also create a class for the different types of sandwich mentioned in step 2:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// builderpattern/app/Sandwich/TunaSandwich.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Sandwich</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TunaSandwich</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>Sandwich</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>For Step 3, you can simply implement the <code>Component</code> interface and name each one differently.</p><p>Bread:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// builderpattern/app/Sandwich/Components/Bread/WheatBread.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Bread</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Component</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>WheatBread</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>Component</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Spread:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// builderpattern/app/Sandwich/Components/Spread/Mayo.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Spread</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Component</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Mayo</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>Component</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Filling:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// builderpattern/app/Sandwich/Components/Filling/Tuna.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Filling</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Component</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Tuna</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>Component</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Garnish:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// builderpattern/app/Sandwich/Components/Garnish/Cilantro.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Garnish</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Component</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Cilantro</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>Component</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>Next, we can now move on to step 4 which is to create a builder for each type of sandwich we want to make. In this case, we want to make a tuna sandwich builder. But before we proceed to actually implementing that, we first need to create the <code>Builder</code> interface which allows us to specify the methods (aka actions) required for creating a sandwich. These are basically the steps we defined on step 1 with the addition of the <code>createSandwich</code> (for initiating the creation of a sandwich) and <code>getSandwich</code> method (for getting the final state of the sandwich):</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// builderpattern/app/Builders/Builder.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>BuilderPattern\App\Builders</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Sandwich</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Builder</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>createSandwich</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addBread</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addSpread</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addFilling</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addGarnish</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getSandwich</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>Sandwich</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Then in the <code>TunaSandwichBuilder</code>, we can specify which components we want to add to the sandwich. This is now simple because we&rsquo;ve broken down the steps that are necessary to build a sandwich. The <code>createSandwich</code> method is where we specify the type of sandwich we want to build. In this case it&rsquo;s a <code>TunaSandwich</code>. Note that the <code>TunaSandwich</code> class is extending from the abstract <code>Sandwich</code> class where we defined the <code>setComponent</code> method for setting the different components that makes up a sandwich. That method is what we&rsquo;re calling on every action. Some sandwiches might not even have a filling or a garnish. In those cases, you can simply create a method with no body. Finally, we have the <code>getSandwich</code> method which simply returns the finished product:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>// builderpattern/app/Builders/TunaSandwichBuilder.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>BuilderPattern\App\Builders</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Builders\Builder</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Sandwich</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\TunaSandwich</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Bread\WheatBread</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Filling\Tuna</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Spread\Mayo</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Garnish\Cilantro</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>TunaSandwichBuilder</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>Builder</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $sandwich;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>createSandwich</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>sandwich</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TunaSandwich</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addBread</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>sandwich</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setComponent</span>(<span style=color:#e6db74>&#39;bread&#39;</span>, <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>WheatBread</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addSpread</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>sandwich</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setComponent</span>(<span style=color:#e6db74>&#39;spread&#39;</span>, <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Mayo</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addFilling</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>sandwich</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setComponent</span>(<span style=color:#e6db74>&#39;filling&#39;</span>, <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Tuna</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addGarnish</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>sandwich</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setComponent</span>(<span style=color:#e6db74>&#39;garnish&#39;</span>, <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Cilantro</span>);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getSandwich</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>Sandwich</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>sandwich</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>} 
+</span></span></code></pre></div><p>Next is the fifth step where we create a director which brings everything together. It&rsquo;s sole responsibility is to call all the actions defined in a <code>Builder</code> instance and return the final output at the end:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// builderpattern/app/Director.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>BuilderPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Sandwich</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Builders\Builder</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Director</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>build</span>(<span style=color:#a6e22e>Builder</span> $builder)<span style=color:#f92672>:</span> <span style=color:#a6e22e>Sandwich</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $builder<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>createSandwich</span>();
+</span></span><span style=display:flex><span>        $builder<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addBread</span>();
+</span></span><span style=display:flex><span>        $builder<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addSpread</span>();
+</span></span><span style=display:flex><span>        $builder<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addFilling</span>();
+</span></span><span style=display:flex><span>        $builder<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>addGarnish</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $builder<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getSandwich</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Now we&rsquo;re ready to test things out. First let&rsquo;s take a look at how it&rsquo;s done if you don&rsquo;t use the Builder design pattern:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// builderpattern/BuilderTest.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>require_once</span> <span style=color:#66d9ef>__DIR__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;/../vendor/autoload.php&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>PHPUnit\Framework\TestCase</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Director</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Builders\TunaSandwichBuilder</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\TunaSandwich</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Bread\WheatBread</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Spread\Mayo</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Filling\Tuna</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>BuilderPattern\App\Sandwich\Components\Garnish\Cilantro</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>BuilderTest</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TestCase</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_non_builder</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $tuna_sandwich <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TunaSandwich</span>;
+</span></span><span style=display:flex><span>        $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setComponent</span>(<span style=color:#e6db74>&#39;bread&#39;</span>, <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>WheatBread</span>);
+</span></span><span style=display:flex><span>        $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setComponent</span>(<span style=color:#e6db74>&#39;spread&#39;</span>, <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Mayo</span>);
+</span></span><span style=display:flex><span>        $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setComponent</span>(<span style=color:#e6db74>&#39;filling&#39;</span>, <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Tuna</span>);
+</span></span><span style=display:flex><span>        $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setComponent</span>(<span style=color:#e6db74>&#39;garnish&#39;</span>, <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Cilantro</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertInstanceOf</span>(<span style=color:#a6e22e>WheatBread</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getComponent</span>(<span style=color:#e6db74>&#39;bread&#39;</span>));
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertInstanceOf</span>(<span style=color:#a6e22e>Mayo</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getComponent</span>(<span style=color:#e6db74>&#39;spread&#39;</span>));
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertInstanceOf</span>(<span style=color:#a6e22e>Tuna</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getComponent</span>(<span style=color:#e6db74>&#39;filling&#39;</span>));
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertInstanceOf</span>(<span style=color:#a6e22e>Cilantro</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getComponent</span>(<span style=color:#e6db74>&#39;garnish&#39;</span>));
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>As you can see from the above code, we&rsquo;ll have to call the <code>setComponent</code> method within the client code. Which isn&rsquo;t too bad until you have 30 different components to set. And you&rsquo;ll basically have to remember which components makes up the object you want to build.</p><p>In contrast, here&rsquo;s how we would do it with the Builder pattern using the <code>Director</code> and the <code>TunaSandwichBuilder</code>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_builder</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    $director <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Director</span>;
+</span></span><span style=display:flex><span>    $tuna_sandwich <span style=color:#f92672>=</span> $director<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>build</span>(<span style=color:#66d9ef>new</span> <span style=color:#a6e22e>TunaSandwichBuilder</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertInstanceOf</span>(<span style=color:#a6e22e>WheatBread</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getComponent</span>(<span style=color:#e6db74>&#39;bread&#39;</span>));
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertInstanceOf</span>(<span style=color:#a6e22e>Mayo</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getComponent</span>(<span style=color:#e6db74>&#39;spread&#39;</span>));
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertInstanceOf</span>(<span style=color:#a6e22e>Tuna</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getComponent</span>(<span style=color:#e6db74>&#39;filling&#39;</span>));
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertInstanceOf</span>(<span style=color:#a6e22e>Cilantro</span><span style=color:#f92672>::</span><span style=color:#a6e22e>class</span>, $tuna_sandwich<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getComponent</span>(<span style=color:#e6db74>&#39;garnish&#39;</span>));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>To run this. Be sure to add the following on your <code>composer.json</code> file then run <code>composer dump-autoload</code>:</p><pre tabindex=0><code>&#34;autoload&#34;: {
+    &#34;psr-4&#34;: {
+        &#34;BuilderPattern\\App\\&#34;: &#34;builderpattern/app/&#34;
+    }
+},
+</code></pre><p>Also install phpunit (<code>composer require phpunit/phpunit</code>) if you haven&rsquo;t done so already.</p><p>You can then run it by executing the following:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>vendor/bin/phpunit builderpattern/app/BuilderTest.php
+</span></span></code></pre></div><p>That&rsquo;s it for the Builder Pattern. You can reach for this pattern whenever you find yourself needing to construct objects that have the same basic construct but is different enough that you would require a different class for each one. In the real-world, you can use the Builder Pattern to well, build anything. From an SQL query builder to an HTML form builder.</p><p>You can find the source code used in this tutorial on this <a href=https://github.com/anchetaWern/php-design-patterns>GitHub repo</a>.</p></section><nav class="mt-24 flex rounded-lg bg-black/[3%] p-1.5 text-lg dark:bg-white/[8%]"><a class="ml-auto flex w-1/2 items-center justify-end rounded-md p-6 pl-3 no-underline hover:bg-black/[2%]" href=https://anchetaWern.github.io/posts/command-pattern-in-php/><span>PHP Design Patterns: Command Pattern</span><span class=ml-1.5>→</span></a></nav></article></main><footer class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2023
+<a class=link href=https://anchetaWern.github.io/>Wern Ancheta</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>Powered by Hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>▷ Paper 6</a></footer></body></html>
