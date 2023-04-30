@@ -1,0 +1,321 @@
+<!doctype html><html class="not-ready text-sm lg:text-base" style=--bg:#faf6f1 lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>PHP Design Patterns: Visitor Pattern - Wern Ancheta</title><meta name=theme-color><meta name=description content="This is the 17th post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Visitor Pattern.
+The Visitor Pattern is used when you have two or more related entities where you need to do some processing to create some output.
+For example, an HTML form builder class where you need to be able to break down the components which makes it up."><meta name=author content="Wern Ancheta"><link rel="preload stylesheet" as=style href=https://anchetaWern.github.io/main.min.css><link rel=preload as=image href=https://anchetaWern.github.io/theme.png><link rel=preload as=image href=https://anchetaWern.github.io/twitter.svg><link rel=preload as=image href=https://anchetaWern.github.io/github.svg><link rel=preload as=image href=https://anchetaWern.github.io/instagram.svg><link rel=preload as=image href=https://anchetaWern.github.io/rss.svg><link rel=icon href=https://anchetaWern.github.io/favicon.ico><link rel=apple-touch-icon href=https://anchetaWern.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.110.0"><meta property="og:title" content="PHP Design Patterns: Visitor Pattern"><meta property="og:description" content="This is the 17th post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Visitor Pattern.
+The Visitor Pattern is used when you have two or more related entities where you need to do some processing to create some output.
+For example, an HTML form builder class where you need to be able to break down the components which makes it up."><meta property="og:type" content="article"><meta property="og:url" content="https://anchetaWern.github.io/posts/visitor-pattern-in-php/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-04-30T00:00:00+00:00"><meta property="article:modified_time" content="2023-04-30T00:00:00+00:00"><meta itemprop=name content="PHP Design Patterns: Visitor Pattern"><meta itemprop=description content="This is the 17th post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Visitor Pattern.
+The Visitor Pattern is used when you have two or more related entities where you need to do some processing to create some output.
+For example, an HTML form builder class where you need to be able to break down the components which makes it up."><meta itemprop=datePublished content="2023-04-30T00:00:00+00:00"><meta itemprop=dateModified content="2023-04-30T00:00:00+00:00"><meta itemprop=wordCount content="1138"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP Design Patterns: Visitor Pattern"><meta name=twitter:description content="This is the 17th post in a series of articles that will walk you through how to implement design patterns in PHP.
+In this part, we&rsquo;re going to take a look at how you can implement the Visitor Pattern.
+The Visitor Pattern is used when you have two or more related entities where you need to do some processing to create some output.
+For example, an HTML form builder class where you need to be able to break down the components which makes it up."></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-0.5 text-3xl font-bold" href=https://anchetaWern.github.io/>Wern Ancheta</a>
+<a class="btn-dark ml-6 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"></a></div><a class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"></a>
+<script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg=`"#faf6f1"`.replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:mt-0 lg:ml-12 lg:items-center lg:space-x-6"><a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/anchetaWern target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./instagram.svg) href=https://instagram.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://anchetaWern.github.io/index.xml target=_blank></a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pt-20 pb-32 dark:prose-invert"><article><header class=mb-20><h1 class="!my-0 pb-2.5">PHP Design Patterns: Visitor Pattern</h1><div class="text-sm opacity-60"><time>Apr 30, 2023</time>
+<span class=mx-1>&#183;</span>
+<span>Wern Ancheta</span></div></header><section><p>This is the 17th post in a series of articles that will walk you through how to implement design patterns in PHP.</p><p>In this part, we&rsquo;re going to take a look at how you can implement the Visitor Pattern.</p><p>The Visitor Pattern is used when you have two or more related entities where you need to do some processing to create some output.</p><p>For example, an HTML form builder class where you need to be able to break down the components which makes it up. The form hierarchy usually looks like this:</p><pre tabindex=0><code>form &gt; fieldset -&gt; input field
+</code></pre><p>So a form is made up of fieldsets, and a fieldset can have multiple input fields. We want to create a class that can process all of those components.
+To implement that, we need to put something in place to treat those individual components as if they were the same entity. That way, we don&rsquo;t have to add conditional statements checking for types and whatnot.</p><p>Here it is represented in code:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Form</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>private</span> <span style=color:#a6e22e>string</span> $id, <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>array</span> $fieldsets) 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getFieldsets</span>() <span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>fieldsets</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Fieldset</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>private</span> <span style=color:#a6e22e>string</span> $id, <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>array</span> $inputFields) 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getInputFields</span>() <span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>inputFields</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>InputField</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>private</span> <span style=color:#a6e22e>string</span> $id, <span style=color:#66d9ef>private</span> <span style=color:#a6e22e>string</span> $type) 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getType</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>type</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>To process those three entities, you have a FormRenderer class:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FormRenderer</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>handle</span>($entity)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> ($entity <span style=color:#a6e22e>instanceOf</span> <span style=color:#a6e22e>Form</span>) {
+</span></span><span style=display:flex><span>            <span style=color:#75715e>// ..
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        } <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> ($entity <span style=color:#a6e22e>instanceOf</span> <span style=color:#a6e22e>Fieldset</span>) {
+</span></span><span style=display:flex><span>            <span style=color:#75715e>// ..
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        } <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> ($entity <span style=color:#a6e22e>instanceOf</span> <span style=color:#a6e22e>InputField</span>) {
+</span></span><span style=display:flex><span>            <span style=color:#75715e>// ..
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>You probably already see where this is going. Basically, for every new entity that you add, you&rsquo;re also going to need to update this conditional.</p><p>This is where the Visitor Pattern comes in. It allows you to treat these individual entities as if they were the same entity. That way, you can eliminate the type checks and have a cleaner-looking code in general.</p><h3 id=implementation>Implementation</h3><p>To implement the Visitor pattern, we first need to create an interface in which all the entities will adhere to. In this case, we need to add the <code>accept</code> method which accepts a <code>Visitor</code> instance. The visitor is the class that will process each of the different entities. In our example above, we have the <code>FormRenderer</code> as a type of visitor. But you can also have a <code>FormTreeGenerator</code> or a <code>FormJsonGenerator</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// visitorpattern/app/FormComponent.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>VisitorPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\Visitor</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>FormComponent</span> {
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>accept</span>(<span style=color:#a6e22e>Visitor</span> $visitor) <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Next, we can now have our entities implement the <code>FormComponent</code> method. This is where you call the method from the visitor for specifically visiting this entity. So you&rsquo;re basically passing an instance of the entity so the visitor can do whatever it&rsquo;s meant to do to the entity. We also have a couple of other methods: <code>getId</code> and <code>getFieldsets</code> whose sole purpose is to return whatever arguments are passed in the constructor:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// visitorpattern/app/Form.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>VisitorPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\FormComponent</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\Visitor</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Form</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>FormComponent</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>private</span> <span style=color:#a6e22e>string</span> $id, <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>array</span> $fieldsets) 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getId</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>id</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getFieldsets</span>() <span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>fieldsets</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>accept</span>(<span style=color:#a6e22e>Visitor</span> $visitor) <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $visitor<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>visitForm</span>($this);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Do the same for the Fieldset:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// visitorpattern/app/Fieldset.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>VisitorPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\FormComponent</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\Visitor</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Fieldset</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>FormComponent</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>private</span> <span style=color:#a6e22e>string</span> $id, <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>array</span> $inputFields) 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getId</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>id</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getInputFields</span>() <span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>inputFields</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>accept</span>(<span style=color:#a6e22e>Visitor</span> $visitor) <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $visitor<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>visitFieldset</span>($this);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>And the InputField:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// visitorpattern/app/InputField.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>VisitorPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\FormComponent</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\Visitor</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>InputField</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>FormComponent</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>private</span> <span style=color:#a6e22e>string</span> $id, <span style=color:#66d9ef>private</span> <span style=color:#a6e22e>string</span> $type) 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getId</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>id</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getType</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>type</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>accept</span>(<span style=color:#a6e22e>Visitor</span> $visitor) <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $visitor<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>visitInputField</span>($this);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Next, we create the Visitor interface. Each Visitor class has to be abide to this interface so this is where you specify all the methods that each visitor class needs to implement. In this case, we want each one to have a separate method for visiting a form, a fieldset, and an input field. If you have other entities that needs visiting, this is also where you specify them:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// visitorpattern/app/Visitor.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>VisitorPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\Form</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\Fieldset</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\InputField</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Visitor</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>visitForm</span>(<span style=color:#a6e22e>Form</span> $form) <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>visitFieldset</span>(<span style=color:#a6e22e>Fieldset</span> $fieldset) <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>visitInputField</span>(<span style=color:#a6e22e>InputField</span> $inputField) <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Next, have the FormRenderer implement the Visitor interface. This is where you add the logic for visiting each entity. In this case, we&rsquo;re simply returning the HTML equivalent of the arguments that were passed when each entity is instantiated:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// visitorpattern/app/FormRenderer.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>VisitorPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\Visitor</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\Form</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\Fieldset</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\InputField</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>FormRenderer</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>Visitor</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>visitForm</span>(<span style=color:#a6e22e>Form</span> $form) <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $html <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>foreach</span> ($form<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getFieldsets</span>() <span style=color:#66d9ef>as</span> $fieldset)
+</span></span><span style=display:flex><span>        {   
+</span></span><span style=display:flex><span>            $html <span style=color:#f92672>.=</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>visitFieldset</span>($fieldset);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $html;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>visitFieldset</span>(<span style=color:#a6e22e>Fieldset</span> $fieldset) <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $html <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;&lt;fieldset id=&#34;&#39;</span> <span style=color:#f92672>.</span> $fieldset<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getId</span>() <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;&#34;&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>foreach</span> ($fieldset<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getInputFields</span>() <span style=color:#66d9ef>as</span> $field)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            $html <span style=color:#f92672>.=</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>visitInputField</span>($field);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        $html <span style=color:#f92672>.=</span> <span style=color:#e6db74>&#34;&lt;/fieldset&gt;&#34;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $html;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>visitInputField</span>(<span style=color:#a6e22e>InputField</span> $inputField) <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> ($inputField<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getType</span>() <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;textarea&#39;</span>)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;&lt;textarea name=&#34;&#39;</span> <span style=color:#f92672>.</span> $inputField<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getId</span>() <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;&#34;&gt;&lt;/textarea&gt;&#39;</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;&lt;input type=&#34;&#39;</span> <span style=color:#f92672>.</span> $inputField<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getType</span>() <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;&#34; name=&#34;&#39;</span> <span style=color:#f92672>.</span> $inputField<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getId</span>() <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;&#34; /&gt;&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Here&rsquo;s the test code:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// visitorpattern/VisitorTest.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>require_once</span> <span style=color:#66d9ef>__DIR__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;/../vendor/autoload.php&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>PHPUnit\Framework\TestCase</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\Form</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\Fieldset</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\InputField</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>VisitorPattern\App\FormRenderer</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>VisitorTest</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TestCase</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_visitor</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $businessDetailsFieldset <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Fieldset</span>(<span style=color:#e6db74>&#39;businessDetails&#39;</span>, [
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>InputField</span>(<span style=color:#e6db74>&#39;name&#39;</span>, <span style=color:#e6db74>&#39;text&#39;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>InputField</span>(<span style=color:#e6db74>&#39;address&#39;</span>, <span style=color:#e6db74>&#39;text&#39;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>InputField</span>(<span style=color:#e6db74>&#39;about_text&#39;</span>, <span style=color:#e6db74>&#39;textarea&#39;</span>),
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $businessContactFieldset <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Fieldset</span>(<span style=color:#e6db74>&#39;businessContact&#39;</span>, [
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>InputField</span>(<span style=color:#e6db74>&#39;contact&#39;</span>, <span style=color:#e6db74>&#39;text&#39;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>InputField</span>(<span style=color:#e6db74>&#39;email&#39;</span>, <span style=color:#e6db74>&#39;email&#39;</span>),
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>InputField</span>(<span style=color:#e6db74>&#39;phone_number&#39;</span>, <span style=color:#e6db74>&#39;number&#39;</span>),
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $businessSignupForm <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Form</span>(<span style=color:#e6db74>&#39;businessSignup&#39;</span>, [
+</span></span><span style=display:flex><span>            $businessDetailsFieldset,
+</span></span><span style=display:flex><span>            $businessContactFieldset,
+</span></span><span style=display:flex><span>        ]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $formRenderer <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>FormRenderer</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $html <span style=color:#f92672>=</span> $businessSignupForm<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>accept</span>($formRenderer);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($html, <span style=color:#e6db74>&#39;&lt;fieldset id=&#34;businessDetails&#34;&gt;&lt;input type=&#34;text&#34; name=&#34;name&#34; /&gt;&lt;input type=&#34;text&#34; name=&#34;address&#34; /&gt;&lt;textarea name=&#34;about_text&#34;&gt;&lt;/textarea&gt;&lt;/fieldset&gt;&lt;fieldset id=&#34;businessContact&#34;&gt;&lt;input type=&#34;text&#34; name=&#34;contact&#34; /&gt;&lt;input type=&#34;email&#34; name=&#34;email&#34; /&gt;&lt;input type=&#34;number&#34; name=&#34;phone_number&#34; /&gt;&lt;/fieldset&gt;&#39;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>To run this, update the <code>composer.json</code> file to add the path:</p><pre tabindex=0><code>&#34;autoload&#34;: {
+    &#34;psr-4&#34;: {
+        // ..
+        &#34;VisitorPattern\\App\\&#34;: &#34;visitorpattern/app/&#34;
+    }
+},
+</code></pre><p>Also install phpunit (<code>composer require phpunit/phpunit</code>) if you haven&rsquo;t done so already.</p><p>You can then run it by executing the following:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>vendor/bin/phpunit visitorpattern/app/VisitorTest.php
+</span></span></code></pre></div><p>That&rsquo;s all there is to it to the Visitor pattern. This is one of the few patterns that doesn&rsquo;t have much application in PHP. But if you do encounter some problem that looks like what we solved above then you now knkow which pattern to use. This can be used mostly for report generation for different entities in your system.</p><p>You can find the source code used in this tutorial on this <a href=https://github.com/anchetaWern/php-design-patterns>GitHub repo</a>.</p></section><nav class="mt-24 flex rounded-lg bg-black/[3%] p-1.5 text-lg dark:bg-white/[8%]"><a class="ml-auto flex w-1/2 items-center justify-end rounded-md p-6 pl-3 no-underline hover:bg-black/[2%]" href=https://anchetaWern.github.io/posts/prototype-pattern-in-php/><span>PHP Design Patterns: Prototype Pattern</span><span class=ml-1.5>→</span></a></nav></article></main><footer class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2023
+<a class=link href=https://anchetaWern.github.io/>Wern Ancheta</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>Powered by Hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>▷ Paper 6</a></footer></body></html>
