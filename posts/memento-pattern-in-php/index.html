@@ -1,0 +1,243 @@
+<!doctype html><html class="not-ready text-sm lg:text-base" style=--bg:#faf6f1 lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>PHP Design Patterns: Memento Pattern - Wern Ancheta</title><meta name=theme-color><meta name=description content="This is the 18th post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how we can implement the Memento Pattern.
+You can use the Memento pattern if you have a need for keeping track of the state of an object. This allows you to do operations like taking a snapshot of its current state and restoring that snapshot at a later point in time."><meta name=author content="Wern Ancheta"><link rel="preload stylesheet" as=style href=https://anchetaWern.github.io/main.min.css><link rel=preload as=image href=https://anchetaWern.github.io/theme.png><link rel=preload as=image href=https://anchetaWern.github.io/twitter.svg><link rel=preload as=image href=https://anchetaWern.github.io/github.svg><link rel=preload as=image href=https://anchetaWern.github.io/instagram.svg><link rel=preload as=image href=https://anchetaWern.github.io/rss.svg><link rel=icon href=https://anchetaWern.github.io/favicon.ico><link rel=apple-touch-icon href=https://anchetaWern.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.110.0"><meta property="og:title" content="PHP Design Patterns: Memento Pattern"><meta property="og:description" content="This is the 18th post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how we can implement the Memento Pattern.
+You can use the Memento pattern if you have a need for keeping track of the state of an object. This allows you to do operations like taking a snapshot of its current state and restoring that snapshot at a later point in time."><meta property="og:type" content="article"><meta property="og:url" content="https://anchetaWern.github.io/posts/memento-pattern-in-php/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-05-07T00:00:00+00:00"><meta property="article:modified_time" content="2023-05-07T00:00:00+00:00"><meta itemprop=name content="PHP Design Patterns: Memento Pattern"><meta itemprop=description content="This is the 18th post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how we can implement the Memento Pattern.
+You can use the Memento pattern if you have a need for keeping track of the state of an object. This allows you to do operations like taking a snapshot of its current state and restoring that snapshot at a later point in time."><meta itemprop=datePublished content="2023-05-07T00:00:00+00:00"><meta itemprop=dateModified content="2023-05-07T00:00:00+00:00"><meta itemprop=wordCount content="1035"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP Design Patterns: Memento Pattern"><meta name=twitter:description content="This is the 18th post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how we can implement the Memento Pattern.
+You can use the Memento pattern if you have a need for keeping track of the state of an object. This allows you to do operations like taking a snapshot of its current state and restoring that snapshot at a later point in time."></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-0.5 text-3xl font-bold" href=https://anchetaWern.github.io/>Wern Ancheta</a>
+<a class="btn-dark ml-6 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"></a></div><a class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"></a>
+<script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg=`"#faf6f1"`.replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:mt-0 lg:ml-12 lg:items-center lg:space-x-6"><a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/anchetaWern target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./instagram.svg) href=https://instagram.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://anchetaWern.github.io/index.xml target=_blank></a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pt-20 pb-32 dark:prose-invert"><article><header class=mb-20><h1 class="!my-0 pb-2.5">PHP Design Patterns: Memento Pattern</h1><div class="text-sm opacity-60"><time>May 7, 2023</time>
+<span class=mx-1>&#183;</span>
+<span>Wern Ancheta</span></div></header><section><p>This is the 18th post in a series of articles on how to implement design patterns in PHP.</p><p>In this part, we&rsquo;ll see how we can implement the Memento Pattern.</p><p>You can use the Memento pattern if you have a need for keeping track of the state of an object. This allows you to do operations like taking a snapshot of its current state and restoring that snapshot at a later point in time.</p><p>The Memento pattern has three components to it:</p><ul><li><strong>Originator</strong> - the object you want to keep track of. For example, a whiteboard app can have a <code>Whiteboard</code> class which keeps track of all the changes made to the whiteboard.</li><li><strong>Memento</strong> - this is where the state you want to keep for a specific object is saved in memory.</li><li><strong>Caretaker</strong> - this handles the different operations for managing the state of an object. Things like taking a snapshot (backup), and restoring a snapshot (restore).</li></ul><h3 id=implementation>Implementation</h3><p>Let&rsquo;s say we have a <code>Garden</code> class which we want to keep track of. It has three properties: status, plants, and installations. These will be the state which we want to backup. We also have methods for getting and setting values for them, but they&rsquo;re only used for testing.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// mementopattern/app/Garden.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>MementoPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>MementoPattern\App\GardenMemento</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>MementoPattern\App\Memento</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Garden</span>
+</span></span><span style=display:flex><span>{   
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>private</span> <span style=color:#a6e22e>string</span> $status, <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>array</span> $plants, <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>array</span> $installations)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getStatus</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>status</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getPlants</span>() <span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>plants</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getInstallations</span>() <span style=color:#f92672>:</span> <span style=color:#66d9ef>array</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>installations</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setStatus</span>($status)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>status</span> <span style=color:#f92672>=</span> $status;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setPlants</span>($plants)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>plants</span> <span style=color:#f92672>=</span> $plants;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setInstallations</span>($installs)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>installations</span> <span style=color:#f92672>=</span> $installs; 
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The only requirement is for the originator to implement the <code>save</code> and <code>restore</code> methods. The <code>save</code> method is responsible for initializing an instance of the memento class that&rsquo;s specifically intended for use with this originator (<code>GardenMemento</code>). This is where we pass in the unique ID and the state that we want to backup:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#75715e>// mementopattern/app/Garden.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>save</span>($id) <span style=color:#f92672>:</span> <span style=color:#a6e22e>Memento</span>
+</span></span><span style=display:flex><span>{   
+</span></span><span style=display:flex><span>    $state <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;status&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>status</span>, 
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;plants&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>plants</span>, 
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;installations&#39;</span> <span style=color:#f92672>=&gt;</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>installations</span>,
+</span></span><span style=display:flex><span>    ];
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>GardenMemento</span>($id, <span style=color:#a6e22e>json_encode</span>($state));
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>On the other hand, we have the <code>restore</code> method which is responsible for restoring the state by using the memento that was passed as an argument:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#75715e>// mementopattern/app/Garden.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>restore</span>(<span style=color:#a6e22e>Memento</span> $memento) <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    $gardenState <span style=color:#f92672>=</span> <span style=color:#a6e22e>json_decode</span>($memento<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getState</span>(), <span style=color:#66d9ef>true</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>status</span> <span style=color:#f92672>=</span> $gardenState[<span style=color:#e6db74>&#39;status&#39;</span>];
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>plants</span> <span style=color:#f92672>=</span> $gardenState[<span style=color:#e6db74>&#39;plants&#39;</span>];
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>installations</span> <span style=color:#f92672>=</span> $gardenState[<span style=color:#e6db74>&#39;installations&#39;</span>];
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Next, we have the memento interface. This is what all memento classes will abide to. In this case, they all have to implement the <code>getId</code> and <code>getState</code> methods. The former being the one that returns the unique ID for a specific snapshot, while the latter returns the actual snapshot:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// mementopattern/app/Memento.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>MementoPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>Memento</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getId</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getState</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The <code>GardenMemento</code> is pretty much a boilerplate class. You initialize it with the ID and the state your backing up, then you create methods for getting those two values:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// mementopattern/app/GardenMemento.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>MementoPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>MementoPattern\App\Memento</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>GardenMemento</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>Memento</span> 
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>private</span> <span style=color:#a6e22e>string</span> $id, <span style=color:#66d9ef>private</span> <span style=color:#a6e22e>string</span> $state)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getId</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>id</span>; 
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getState</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>string</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>state</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The <code>CareTaker</code> is the one that brings it all together. Initializing it requires the originator to be passed to it. This allows the Caretaker to call the <code>save</code> and <code>restore</code> methods from the Originator. The <code>backup</code> method is responsible for calling the <code>save</code> method on the Originator. This returns and instance of the <code>GardenMemento</code> which allows you to get the ID to be used as the filename and the state you want to backup:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// mementopattern/app/CareTaker.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>MementoPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>MementoPattern\App\Memento</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>MementoPattern\App\GardenMemento</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CareTaker</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#66d9ef>private</span> $originator)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>backup</span>($id) <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $memento <span style=color:#f92672>=</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>originator</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>save</span>($id);
+</span></span><span style=display:flex><span>       
+</span></span><span style=display:flex><span>        $fp <span style=color:#f92672>=</span> <span style=color:#a6e22e>fopen</span>($memento<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getId</span>() <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;.txt&#39;</span>, <span style=color:#e6db74>&#39;w+&#39;</span>);
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>fwrite</span>($fp, $memento<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getState</span>());
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>fclose</span>($fp);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>On the other hand, the <code>restore</code> method is responsible for reading the contents of the snapshot file and loading it into the GardenMemento. This then allows us to restore the state of the Originator:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#75715e>// mementopattern/app/CareTaker.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>restore</span>($id) <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    $fp <span style=color:#f92672>=</span> <span style=color:#a6e22e>fopen</span>($id <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;.txt&#39;</span>, <span style=color:#e6db74>&#39;r&#39;</span>);
+</span></span><span style=display:flex><span>    $size <span style=color:#f92672>=</span> <span style=color:#a6e22e>filesize</span>($id <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;.txt&#39;</span>);
+</span></span><span style=display:flex><span>    $json <span style=color:#f92672>=</span> <span style=color:#a6e22e>fread</span>($fp, $size);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>fclose</span>($fp);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    $memento <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>GardenMemento</span>($id, $json);
+</span></span><span style=display:flex><span>    $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>originator</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>restore</span>($memento);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>To test this out, we initialize a new Garden object and do the following:</p><ol><li>Initial assertion to make sure that the state is what we expect.</li><li>Call the <code>backup</code> method to create a new snapshot using the initial state.</li><li>Update the state to something else.</li><li>Create another backup, this time with the updated state.</li><li>Assert that the object now has the updated state.</li><li>Restore to the initial state (using the initial snapshot).</li><li>Assert that the object is now back its initial state.</li><li>Restore to the updated state.</li><li>Assert that the object is now using the updated state again.</li></ol><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// mementopattern/MementoTest.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>require_once</span> <span style=color:#66d9ef>__DIR__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;/../vendor/autoload.php&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>PHPUnit\Framework\TestCase</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>MementoPattern\App\Garden</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>MementoPattern\App\Caretaker</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>MementoTest</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TestCase</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_memento</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $initialStatus <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;healthy&#39;</span>;
+</span></span><span style=display:flex><span>        $initialPlants <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;tomato&#39;</span>, <span style=color:#e6db74>&#39;okra&#39;</span>, <span style=color:#e6db74>&#39;basil&#39;</span>, <span style=color:#e6db74>&#39;pepper&#39;</span>, <span style=color:#e6db74>&#39;chives&#39;</span>];
+</span></span><span style=display:flex><span>        $initialInstallations <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;uv net&#39;</span>];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $garden <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Garden</span>($initialStatus, $initialPlants, $initialInstallations);
+</span></span><span style=display:flex><span>        $caretaker <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Caretaker</span>($garden); 
+</span></span><span style=display:flex><span>        $firstSnapshotId <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;mygarden-&#39;</span> <span style=color:#f92672>.</span> <span style=color:#a6e22e>uniqid</span>();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 1
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getStatus</span>(), $initialStatus);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getPlants</span>(), $initialPlants);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getInstallations</span>(), $initialInstallations);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 2
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        $caretaker<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>backup</span>($firstSnapshotId);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $updatedStatus <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;unhealthy&#39;</span>;
+</span></span><span style=display:flex><span>        $updatedPlants <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;spinach&#39;</span>, <span style=color:#e6db74>&#39;kangkong&#39;</span>, <span style=color:#e6db74>&#39;pechay&#39;</span>, <span style=color:#e6db74>&#39;bokchoy&#39;</span>, <span style=color:#e6db74>&#39;arugula&#39;</span>];
+</span></span><span style=display:flex><span>        $updatedInstallations <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;trelis&#39;</span>, <span style=color:#e6db74>&#39;drip&#39;</span>];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 3
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        $garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setStatus</span>($updatedStatus);
+</span></span><span style=display:flex><span>        $garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setPlants</span>($updatedPlants);
+</span></span><span style=display:flex><span>        $garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setInstallations</span>($updatedInstallations);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 4
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        $secondSnapshotId <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;mygarden-&#39;</span> <span style=color:#f92672>.</span> <span style=color:#a6e22e>uniqid</span>();
+</span></span><span style=display:flex><span>        $caretaker<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>backup</span>($secondSnapshotId);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 5
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getStatus</span>(), $updatedStatus);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getPlants</span>(), $updatedPlants);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getInstallations</span>(), $updatedInstallations);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 6
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        $caretaker<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>restore</span>($firstSnapshotId);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 7
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getStatus</span>(), $initialStatus);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getPlants</span>(), $initialPlants);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getInstallations</span>(), $initialInstallations);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 8
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        $caretaker<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>restore</span>($secondSnapshotId);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// 9
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getStatus</span>(), $updatedStatus);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getPlants</span>(), $updatedPlants);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($garden<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getInstallations</span>(), $updatedInstallations);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>To run this. Be sure you have the following on your <code>composer.json</code> file then run <code>composer dump-autoload</code>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#e6db74>&#34;autoload&#34;</span><span style=color:#960050;background-color:#1e0010>:</span> {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;psr-4&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;MementoPattern\\App\\&#34;</span>: <span style=color:#e6db74>&#34;mementopattern/app&#34;</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Also install phpunit (<code>composer require phpunit/phpunit</code>) if you haven&rsquo;t done so already.</p><p>Then you can run the tests:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>vendor/bin/phpunit mementopattern/MementoTest.php
+</span></span></code></pre></div><p>That&rsquo;s it for the Memento pattern. You can use this pattern whenever you find yourself needing to take snapshots of an object and performing operations such as undo, redo, list history, etc.</p><p>You can find the source code used in this tutorial on this <a href=https://github.com/anchetaWern/php-design-patterns>GitHub repo</a>.</p></section><nav class="mt-24 flex rounded-lg bg-black/[3%] p-1.5 text-lg dark:bg-white/[8%]"><a class="ml-auto flex w-1/2 items-center justify-end rounded-md p-6 pl-3 no-underline hover:bg-black/[2%]" href=https://anchetaWern.github.io/posts/visitor-pattern-in-php/><span>PHP Design Patterns: Visitor Pattern</span><span class=ml-1.5>→</span></a></nav></article></main><footer class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2023
+<a class=link href=https://anchetaWern.github.io/>Wern Ancheta</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>Powered by Hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>▷ Paper 6</a></footer></body></html>
