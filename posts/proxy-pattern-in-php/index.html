@@ -1,0 +1,179 @@
+<!doctype html><html class="not-ready text-sm lg:text-base" style=--bg:#faf6f1 lang=en-us><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>PHP Design Patterns: Proxy Pattern - Wern Ancheta</title><meta name=theme-color><meta name=description content="This is the 19th post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how you can implement the Proxy pattern in PHP. The Proxy pattern, as the name suggests is used for creating a proxy for another object. The proxy implements the same interface as the original so it can just be swapped out easily. This way, the proxy can either add or remove functionality from the original."><meta name=author content="Wern Ancheta"><link rel="preload stylesheet" as=style href=https://anchetaWern.github.io/main.min.css><link rel=preload as=image href=https://anchetaWern.github.io/theme.png><link rel=preload as=image href=https://anchetaWern.github.io/twitter.svg><link rel=preload as=image href=https://anchetaWern.github.io/github.svg><link rel=preload as=image href=https://anchetaWern.github.io/instagram.svg><link rel=preload as=image href=https://anchetaWern.github.io/rss.svg><link rel=icon href=https://anchetaWern.github.io/favicon.ico><link rel=apple-touch-icon href=https://anchetaWern.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.110.0"><meta property="og:title" content="PHP Design Patterns: Proxy Pattern"><meta property="og:description" content="This is the 19th post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how you can implement the Proxy pattern in PHP. The Proxy pattern, as the name suggests is used for creating a proxy for another object. The proxy implements the same interface as the original so it can just be swapped out easily. This way, the proxy can either add or remove functionality from the original."><meta property="og:type" content="article"><meta property="og:url" content="https://anchetaWern.github.io/posts/proxy-pattern-in-php/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-05-14T00:00:00+00:00"><meta property="article:modified_time" content="2023-05-14T00:00:00+00:00"><meta itemprop=name content="PHP Design Patterns: Proxy Pattern"><meta itemprop=description content="This is the 19th post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how you can implement the Proxy pattern in PHP. The Proxy pattern, as the name suggests is used for creating a proxy for another object. The proxy implements the same interface as the original so it can just be swapped out easily. This way, the proxy can either add or remove functionality from the original."><meta itemprop=datePublished content="2023-05-14T00:00:00+00:00"><meta itemprop=dateModified content="2023-05-14T00:00:00+00:00"><meta itemprop=wordCount content="871"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP Design Patterns: Proxy Pattern"><meta name=twitter:description content="This is the 19th post in a series of articles on how to implement design patterns in PHP.
+In this part, we&rsquo;ll see how you can implement the Proxy pattern in PHP. The Proxy pattern, as the name suggests is used for creating a proxy for another object. The proxy implements the same interface as the original so it can just be swapped out easily. This way, the proxy can either add or remove functionality from the original."></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-0.5 text-3xl font-bold" href=https://anchetaWern.github.io/>Wern Ancheta</a>
+<a class="btn-dark ml-6 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]"></a></div><a class="btn-menu relative z-50 -mr-8 flex h-[5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden"></a>
+<script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg=`"#faf6f1"`.replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:mt-0 lg:ml-12 lg:items-center lg:space-x-6"><a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/anchetaWern target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./instagram.svg) href=https://instagram.com/wernancheta target=_blank></a>
+<a class="h-8 w-8 [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./rss.svg) href=https://anchetaWern.github.io/index.xml target=_blank></a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-10rem)] max-w-3xl px-8 pt-20 pb-32 dark:prose-invert"><article><header class=mb-20><h1 class="!my-0 pb-2.5">PHP Design Patterns: Proxy Pattern</h1><div class="text-sm opacity-60"><time>May 14, 2023</time>
+<span class=mx-1>&#183;</span>
+<span>Wern Ancheta</span></div></header><section><p>This is the 19th post in a series of articles on how to implement design patterns in PHP.</p><p>In this part, we&rsquo;ll see how you can implement the Proxy pattern in PHP.
+The Proxy pattern, as the name suggests is used for creating a proxy for another object. The proxy implements the same interface as the original so it can just be swapped out easily. This way, the proxy can either add or remove functionality from the original. This is for the purpose of consuming less resources or adding extra method calls to other parts of the system (eg. logging or caching).</p><h3 id=decorator-vs-proxy>Decorator vs Proxy</h3><p>The Proxy pattern very similar to the <a href=/posts/decorator-pattern-in-php/>Decorator pattern</a>. They both accept an instance of the original object in their constructor and modify its functionality. The difference is in their use case. The Adapter pattern is meant to have multiple slightly differing implementations of the original, while the Proxy pattern usually have just one proxy for the original. This is because it&rsquo;s use case is mostly for &rsquo;lazy-instantiating&rsquo; the original. This way, it doesn&rsquo;t use as much resources. This does it by skipping a few method calls or swapping out one resource from another (eg. using array instead of a database). On the other hand, the Decorator pattern is usually used for changing up the variables so as to modify the response returned by the method its trying to override. So it&rsquo;s basically doing the same thing as opposed to adding or removing functionality.</p><h3 id=implementation>Implementation</h3><p>Let&rsquo;s start by defining the interface that both the original and the proxy will abide to:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// proxypattern/app/GardenerInterface.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ProxyPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>GardenerInterface</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>waterPlants</span>();
+</span></span><span style=display:flex><span>   
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Next, define the original. This is a class which executes some methods before watering a plant. The methods can be set using the <code>setBeforeActions</code> method. The <code>$actions</code> parameter is an array containing the list of methods to be called:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// proxypattern/app/Gardener.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ProxyPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>ProxyPattern\App\GardenerInterface</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Gardener</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>GardenerInterface</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $before_actions <span style=color:#f92672>=</span> [];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>waterPlants</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#66d9ef>empty</span>($this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>before_actions</span>)) {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>foreach</span> ($this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>before_actions</span> <span style=color:#66d9ef>as</span> $action) {
+</span></span><span style=display:flex><span>                $this<span style=color:#f92672>-&gt;</span>$action();
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> ($this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>isSoilDry</span>()) {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;water&#39;</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;dont water&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>setBeforeActions</span>($actions)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>before_actions</span> <span style=color:#f92672>=</span> $actions;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getBeforeActions</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>before_actions</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>isSoilDry</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>true</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addOrganicMatter</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>addMulch</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Next, we now define the proxy. In this case, it accepts an instance of an original gardener object on its constructor. But with proxy pattern, you can also create an instance of the original from within the class itself. The <code>waterPlants</code> method is where we perform some modifications on the way it works. First, we&rsquo;re setting a couple of &lsquo;before actions&rsquo;. The methods that return the method names are defined within the proxy itself (they&rsquo;re all set to <code>private</code> so you can easily see which ones), or it can also call upon another class to perform something either before or after calling the original method. <code>getBeforeActions</code> is simply a helper method for testing purposes. That way, the test code can easily check which actions were set:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// proxypattern/app/GardenProxy.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>namespace</span> <span style=color:#a6e22e>ProxyPattern\App</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>ProxyPattern\App\GardenerInterface</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>ProxyPattern\App\Gardener</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>GardenerProxy</span> <span style=color:#66d9ef>implements</span> <span style=color:#a6e22e>GardenerInterface</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> $gardener;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> __construct(<span style=color:#a6e22e>Gardener</span> $gardener)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>gardener</span> <span style=color:#f92672>=</span> $gardener;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>waterPlants</span>() 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        $before_actions[] <span style=color:#f92672>=</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>checkPlantType</span>();
+</span></span><span style=display:flex><span>        $before_actions[] <span style=color:#f92672>=</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>checkWeeds</span>();
+</span></span><span style=display:flex><span>       
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>gardener</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>setBeforeActions</span>(<span style=color:#a6e22e>array_filter</span>($before_actions));
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>gardener</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>waterPlants</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getBeforeActions</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>gardener</span><span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getBeforeActions</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>checkPlantType</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> ($this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>checkSoilPh</span>() <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;alkaline&#39;</span>) {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;addOrganicMatter&#39;</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>checkWeeds</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>if</span> ($this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>hasWeeds</span>()) {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;addMulch&#39;</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>hasWeeds</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>true</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>checkSoilPh</span>()
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;alkaline&#39;</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Lastly, here&rsquo;s the test code. The main difference between the original and the proxy is that the original doesn&rsquo;t perform any before actions, thus the array is empty. While the proxy performs some actions. So the use case for the proxy pattern in this case is for adding some extra method calls to perform some custom action. That&rsquo;s a perfectly normal use case for the proxy pattern, and you won&rsquo;t actually have to reach for the adapter pattern in this case (although you can) because this particular use case simply doesn&rsquo;t match that of the adapter pattern:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-php data-lang=php><span style=display:flex><span><span style=color:#f92672>&lt;?</span><span style=color:#a6e22e>php</span> 
+</span></span><span style=display:flex><span><span style=color:#75715e>// proxypattern/ProxyTest.php
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>require_once</span> <span style=color:#66d9ef>__DIR__</span> <span style=color:#f92672>.</span> <span style=color:#e6db74>&#39;/../vendor/autoload.php&#39;</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>PHPUnit\Framework\TestCase</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>ProxyPattern\App\Gardener</span>;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> <span style=color:#a6e22e>ProxyPattern\App\GardenerProxy</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ProxyTest</span> <span style=color:#66d9ef>extends</span> <span style=color:#a6e22e>TestCase</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>test_proxy</span>() <span style=color:#f92672>:</span> <span style=color:#a6e22e>void</span> 
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        $gardener <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Gardener</span>;
+</span></span><span style=display:flex><span>        $gardenerResult <span style=color:#f92672>=</span> $gardener<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>waterPlants</span>();
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($gardenerResult, <span style=color:#e6db74>&#39;water&#39;</span>);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($gardener<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getBeforeActions</span>(), []);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        $gardenerProxy <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>GardenerProxy</span>($gardener);
+</span></span><span style=display:flex><span>        $gardenerProxyResult <span style=color:#f92672>=</span> $gardenerProxy<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>waterPlants</span>();
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($gardenerProxyResult, <span style=color:#e6db74>&#39;water&#39;</span>);
+</span></span><span style=display:flex><span>        $this<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>assertEquals</span>($gardenerProxy<span style=color:#f92672>-&gt;</span><span style=color:#a6e22e>getBeforeActions</span>(), [<span style=color:#e6db74>&#39;addOrganicMatter&#39;</span>, <span style=color:#e6db74>&#39;addMulch&#39;</span>]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>To run this. Be sure you have the following on your <code>composer.json</code> file then run <code>composer dump-autoload</code>:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span><span style=color:#e6db74>&#34;autoload&#34;</span><span style=color:#960050;background-color:#1e0010>:</span> {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;psr-4&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;ProxyPattern\\App\\&#34;</span>: <span style=color:#e6db74>&#34;proxypattern/app&#34;</span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Also install phpunit (<code>composer require phpunit/phpunit</code>) if you haven&rsquo;t done so already.</p><p>Then you can run the tests:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>vendor/bin/phpunit proxypattern/ProxyTest.php
+</span></span></code></pre></div><p>That&rsquo;s it for the Proxy pattern. In summary, you can reach out for this pattern whenever there&rsquo;s a need to swap out existing functionalities for something lighter. This makes it a really good candidate for implementing mocks for tests. So instead of making a request to an external API and returning the result, you can simply implement a proxy that returns some hard-coded result.</p><p>You can find the source code used in this tutorial on this <a href=https://github.com/anchetaWern/php-design-patterns>GitHub repo</a>.</p></section><nav class="mt-24 flex rounded-lg bg-black/[3%] p-1.5 text-lg dark:bg-white/[8%]"><a class="ml-auto flex w-1/2 items-center justify-end rounded-md p-6 pl-3 no-underline hover:bg-black/[2%]" href=https://anchetaWern.github.io/posts/memento-pattern-in-php/><span>PHP Design Patterns: Memento Pattern</span><span class=ml-1.5>→</span></a></nav></article></main><footer class="opaco mx-auto flex h-[5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2023
+<a class=link href=https://anchetaWern.github.io/>Wern Ancheta</a></div><a class="link mx-6" href=https://gohugo.io/ rel=noopener target=_blank>Powered by Hugo️️</a>️
+<a class=link href=https://github.com/nanxiaobei/hugo-paper rel=noopener target=_blank>▷ Paper 6</a></footer></body></html>
