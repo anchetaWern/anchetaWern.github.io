@@ -2,14 +2,40 @@
 title: "Projects"
 ---
 
-## Featured
+### [AgSabay](https://agsabay.pages.dev)
 
-Add 2-4 standout projects with a short description and link each one.
+Ridesharing app for tricycles.
 
-## More Projects
+![AgSabay](/images/portfolio/agsabay.png)
 
-List smaller projects, experiments, or open-source work here.
+---
 
-## Currently Exploring
+### [PainPace](https://painpace.vercel.app)
 
-A brief note about what you're learning or building next.
+An intelligent injury recovery app that helps you balance your daily activity and rehab exercises without overdoing it
+
+![PainPace](/images/portfolio/pain-pace.png)
+
+---
+
+### [Juan Nutrisyon](https://juanutrisyon.info)
+
+Analyze your diet. Track your daily intake and discover if you're meeting your nutritional needs, over-consuming, or falling short
+
+![Juan Nutrisyon](/images/portfolio/juan-nutrisyon.png)
+
+---
+
+### [SellerSight](https://sellersight.co.uk/)
+
+SellerSight helps Amazon & eBay sellers boost profits with real-time dashboards, smart repricing, inventory insights & automated feedback.
+
+![SellerSight](/images/portfolio/sellersight.png)
+
+---
+
+### [Profitl](https://profitl.app)
+
+Amazon FBA Deals Analysis and Product Finder
+
+![Profitl](/images/portfolio/profitl.png)
