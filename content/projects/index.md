@@ -12,7 +12,7 @@ Ridesharing app for tricycles.
 
 ### [PainPace](https://painpace.vercel.app)
 
-An intelligent injury recovery app that helps you balance your daily activity and rehab exercises without overdoing it
+An intelligent injury recovery app that helps you balance your daily activity and rehab exercises without overdoing it.
 
 ![PainPace](/images/portfolio/pain-pace.png)
 
@@ -20,13 +20,13 @@ An intelligent injury recovery app that helps you balance your daily activity an
 
 ### [Juan Nutrisyon](https://juanutrisyon.info)
 
-Analyze your diet. Track your daily intake and discover if you're meeting your nutritional needs, over-consuming, or falling short
+Analyze your diet. Track your daily intake and discover if you're meeting your nutritional needs, over-consuming, or falling short.
 
 ![Juan Nutrisyon](/images/portfolio/juan-nutrisyon.png)
 
 ---
 
-### [SellerSight](https://sellersight.co.uk/)
+### [SellerSight](https://sellersight.co.uk/) (Client Project)
 
 SellerSight helps Amazon & eBay sellers boost profits with real-time dashboards, smart repricing, inventory insights & automated feedback.
 
@@ -34,8 +34,8 @@ SellerSight helps Amazon & eBay sellers boost profits with real-time dashboards,
 
 ---
 
-### [Profitl](https://profitl.app)
+### [Profitl](https://profitl.app) (Client Project)
 
-Amazon FBA Deals Analysis and Product Finder
+Amazon FBA Deals Analysis and Product Finder.
 
 ![Profitl](/images/portfolio/profitl.png)
