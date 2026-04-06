@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Factory Pattern"
 date: "2023-03-05"
+aliases:
+  - /posts/factory-pattern-in-php/
 ---
 
 This is the ninth post in a series of articles on how to implement design patterns in PHP.

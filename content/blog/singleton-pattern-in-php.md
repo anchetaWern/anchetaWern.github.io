@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Singleton Pattern"
 date: "2023-04-02"
+aliases:
+  - /posts/singleton-pattern-in-php/
 ---
 
 This is the 13th post in a series of articles that will walk you through how to implement design patterns in PHP.

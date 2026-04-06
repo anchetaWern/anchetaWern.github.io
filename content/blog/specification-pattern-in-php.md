@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Specification Pattern"
 date: "2023-02-19"
+aliases:
+  - /posts/specification-pattern-in-php/
 ---
 
 This is the seventh post in a series of articles on how to implement design patterns in PHP.

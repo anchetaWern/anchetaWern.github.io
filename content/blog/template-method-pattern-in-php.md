@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Template Method Pattern"
 date: "2023-02-05"
+aliases:
+  - /posts/template-method-pattern-in-php/
 ---
 
 This is the fifth post in a series of articles that will walk you through how to implement design patterns in PHP.

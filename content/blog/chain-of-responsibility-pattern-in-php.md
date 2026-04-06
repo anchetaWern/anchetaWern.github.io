@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Chain of Responsibility Pattern"
 date: "2023-02-12"
+aliases:
+  - /posts/chain-of-responsibility-pattern-in-php/
 ---
 
 This is the sixth post in a series of articles that will walk you through how to implement design patterns in PHP.

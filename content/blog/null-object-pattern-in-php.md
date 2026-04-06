@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Null Object Pattern"
 date: "2023-03-12"
+aliases:
+  - /posts/null-object-pattern-in-php/
 ---
 
 This is the tenth post in a series of articles that will walk you through how to implement design patterns in PHP.

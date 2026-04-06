@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "A Primer to Service Container in Laravel"
 date: "2021-08-15"
+aliases:
+  - /posts/a-primer-to-service-container-in-laravel/
 ---
 
 

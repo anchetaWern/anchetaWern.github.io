@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Strategy Pattern"
 date: "2023-01-29"
+aliases:
+  - /posts/strategy-pattern-in-php/
 ---
 
 This is the fourth post in a series of articles that will walk you through how to implement design patterns in PHP.

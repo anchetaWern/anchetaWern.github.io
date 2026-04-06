@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Composite Pattern"
 date: "2023-03-19"
+aliases:
+  - /posts/composite-pattern-in-php/
 ---
 
 This is the eleventh post in a series of articles that will walk you through how to implement design patterns in PHP.

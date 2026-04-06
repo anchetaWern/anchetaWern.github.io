@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "Getting Started with Laravel Facades"
 date: "2021-08-30"
+aliases:
+  - /posts/getting-started-with-laravel-facades/
 ---
 
 

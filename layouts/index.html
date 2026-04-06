@@ -1,0 +1,23 @@
+{{ define "main" }}
+
+{{ $title := site.Title }}
+{{ $name := "Hi, I'm Wern!" }}
+{{/* Bio is written inline in the template to avoid using $bio */}}
+
+<section class="mb-16">
+  <h1 class="!my-0 text-3xl font-bold">{{ $name }}</h1>
+  <div class="mt-3 text-base opacity-80 space-y-4">
+    <p>With over 10 years of experience in the tech industry, my passion lies in transforming complex ideas into functional realities. I’m a builder at heart, driven by curiosity and a deep-seated interest in health and human performance.</p>
+    <p>What I’m currently building:</p>
+    <ul class="list-disc pl-5 space-y-2">
+      <li><a href="https://juanutrisyon.info/" target="_blank">Juan Nutrisyon</a>: Streamlining nutrition and wellness for the community.</li>
+      <li><a href="https://painpace.vercel.app/" target="_blank">PainPace</a>: A dedicated space for runners to manage injury recovery and get back to the sport they love.</li>
+    </ul>
+    <p>Beyond the screen, my work is grounded in real-world impact. I’m a long-time volunteer with the <a href="https://www.facebook.com/DOERsInAction" target="_blank">DOERs</a>, focused on local environmental conservation. I’m an avid runner (currently in the "rebuilding" phase so I'm more of a "walker" these days) and a student of the natural world.</p>
+    <p><strong>Open to Opportunities</strong>: I’m seeking roles that value strategic thinking, technical depth, and a builder’s perspective—whether that’s in engineering, product, or beyond.</p>
+  </div>
+
+
+</section>
+
+{{ end }}

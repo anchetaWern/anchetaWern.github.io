@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Proxy Pattern"
 date: "2023-05-14"
+aliases:
+  - /posts/proxy-pattern-in-php/
 ---
 
 This is the 19th post in a series of articles on how to implement design patterns in PHP.

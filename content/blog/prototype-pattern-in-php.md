@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Prototype Pattern"
 date: "2023-04-23"
+aliases:
+  - /posts/prototype-pattern-in-php/
 ---
 
 This is the 16th post in a series of articles that will walk you through how to implement design patterns in PHP.

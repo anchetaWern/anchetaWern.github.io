@@ -5,6 +5,7 @@ theme = "paper"
 
 [params]
 color = 'linen'
+mainSections = ['blog']
 
 twitter = 'wernancheta'
 github = 'anchetaWern'      
@@ -13,3 +14,20 @@ rss = true
 
 disableHLJS = true               
 monoDarkIcon = true
+
+[menu]
+  [[menu.main]]
+    identifier = "about"
+    name = "About"
+    url = "/about/"
+    weight = 10
+  [[menu.main]]
+    identifier = "projects"
+    name = "Projects"
+    url = "/projects/"
+    weight = 20
+  [[menu.main]]
+    identifier = "blog"
+    name = "Blog"
+    url = "/blog/"
+    weight = 30

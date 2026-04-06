@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Memento Pattern"
 date: "2023-05-07"
+aliases:
+  - /posts/memento-pattern-in-php/
 ---
 
 This is the 18th post in a series of articles on how to implement design patterns in PHP.

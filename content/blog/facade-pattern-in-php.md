@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Facade Pattern"
 date: "2023-01-15"
+aliases:
+  - /posts/facade-pattern-in-php/
 ---
 
 This is the second post in a series of articles that will walk you through how to implement design patterns in PHP.

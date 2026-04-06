@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Observer Pattern"
 date: "2023-02-26"
+aliases:
+  - /posts/observer-pattern-in-php/
 ---
 
 This is the eight post in a series of articles on how to implement design patterns in PHP.

@@ -2,6 +2,8 @@
 author: "Wern Ancheta"
 title: "PHP Design Patterns: Adapter Pattern"
 date: "2023-01-22"
+aliases:
+  - /posts/adapter-pattern-in-php/
 ---
 
 This is the third post in a series of articles that will walk you through how to implement design patterns in PHP.
