@@ -2,6 +2,18 @@
 title: "Projects"
 ---
 
+### [DOERS Philippines](https://doersphilippines.org)
+
+The DOERS volunteer website.
+
+![DOERS Philippines](/images/portfolio/doers.png)
+
+### [Thrive360 Nutrition Solutions](https://thrive360nutrition.com)
+
+The Thrive360 Nutrition Solutions website.
+
+![Thrive360 Nutrition Solutions](/images/portfolio/thrive360.png)
+
 ### [AgSabay](https://agsabay.pages.dev)
 
 Ridesharing app for tricycles.
@@ -20,7 +32,7 @@ An intelligent injury recovery app that helps you balance your daily activity an
 
 ### [Juan Nutrisyon](https://juanutrisyon.info)
 
-Analyze your diet. Track your daily intake and discover if you're meeting your nutritional needs, over-consuming, or falling short.
+Search the nutrition facts of Filipino foods, and use nutrition tools such as food diary, recipe analyzer, sodium budgeter, and meal planner.
 
 ![Juan Nutrisyon](/images/portfolio/juan-nutrisyon.png)
 
